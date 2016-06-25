@@ -4,15 +4,15 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="bin\Starling-DMT.swf" />
+    <movie path="bin\Rasterizer.swf" />
     <movie fps="30" />
     <movie width="1024" />
     <movie height="768" />
-    <movie version="16" />
+    <movie version="19" />
     <movie minorVersion="0" />
     <movie platform="AIR Mobile" />
     <movie background="#FFFFFF" />
-    <movie preferredSDK="AIR 16.0.0;16.0.0;" />
+    <movie preferredSDK="AIR 19.0.0;19.0.0;" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>

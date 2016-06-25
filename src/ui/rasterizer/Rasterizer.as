@@ -136,20 +136,20 @@ package ui.rasterizer
 				
 				sourceBMD = sourceRasterItem.bmd;
 				
-				mBitmapData.fillRect(new Rectangle(rect.x, rect.y, rect.width, rect.height), 0xFF000000);
-				mBitmapData.fillRect(new Rectangle(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2), color);
-				//mBitmapData.copyPixels(sourceBMD, sourceBMD.rect, sourceRasterItem.rect.topLeft);
+				//mBitmapData.fillRect(new Rectangle(rect.x, rect.y, rect.width, rect.height), 0xFF000000);
+				//mBitmapData.fillRect(new Rectangle(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2), color);
+				mBitmapData.copyPixels(sourceBMD, sourceBMD.rect, rect.topLeft, null, null, true);
 			}
 			
 			//File.applicationDirectory.browseForSave("FILE");
 			
-			//xml.appendChild("</TextureAtlas>");
+			xml.appendChild("</TextureAtlas>");
 			
-			var textureAtlas:TextureAtlas = new TextureAtlas(Texture.fromBitmapData(mBitmapData), xml);
-			var texture:Texture = textureAtlas.getTexture("avatar")
+			//var textureAtlas:TextureAtlas = new TextureAtlas(Texture.fromBitmapData(mBitmapData));
+			//var texture:Texture = textureAtlas.getTexture("avatar")
 			//var img:Image = new Image(texture);
 			//Starling.current.stage.addChild(img);
-			trace(packer.packedHeight, packer.packedWidth);
+			//trace(packer.packedHeight, packer.packedWidth);
 			
 		}
 		

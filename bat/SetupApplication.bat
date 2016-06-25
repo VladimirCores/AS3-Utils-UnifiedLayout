@@ -6,9 +6,9 @@
 :: NOTICE: all paths are relative to project root
 
 :: Android packaging
-set AND_CERT_NAME="Starling-DMT"
+set AND_CERT_NAME="Rasterizer"
 set AND_CERT_PASS=fd
-set AND_CERT_FILE=cert\Starling-DMT.p12
+set AND_CERT_FILE=cert\Rasterizer.p12
 set AND_ICONS=icons/android
 
 set AND_SIGNING_OPTIONS=-storetype pkcs12 -keystore "%AND_CERT_FILE%" -storepass %AND_CERT_PASS%
@@ -17,7 +17,7 @@ set AND_SIGNING_OPTIONS=-storetype pkcs12 -keystore "%AND_CERT_FILE%" -storepass
 set IOS_DIST_CERT_FILE=
 set IOS_DEV_CERT_FILE=
 set IOS_DEV_CERT_PASS=
-set IOS_PROVISION=cert\Starling-DMT.mobileprovision
+set IOS_PROVISION=cert\Rasterizer.mobileprovision
 set IOS_ICONS=icons/ios
 
 set IOS_DEV_SIGNING_OPTIONS=-storetype pkcs12 -keystore "%IOS_DEV_CERT_FILE%" -storepass %IOS_DEV_CERT_PASS% -provisioning-profile %IOS_PROVISION%
@@ -36,7 +36,7 @@ set APP_ID=%APP_ID: =%
 
 :: Output packages
 set DIST_PATH=dist
-set DIST_NAME=Starling-DMT
+set DIST_NAME=Rasterizer
 
 :: Debugging using a custom IP
 set DEBUG_IP=

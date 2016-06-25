@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<application xmlns="http://ns.adobe.com/air/application/16.0">
-  <id>air.Starling-DMT</id>
+<application xmlns="http://ns.adobe.com/air/application/19.0">
+  <id>air.Rasterizer</id>
   <versionNumber>0.1</versionNumber>
   <supportedProfiles>mobileDevice</supportedProfiles>
-  <filename>Starling-DMT</filename>
-  <name>Starling-DMT</name>
+  <filename>Rasterizer</filename>
+  <name>Rasterizer</name>
   <android>
     <manifestAdditions><![CDATA[<manifest android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="8" />
@@ -26,8 +26,8 @@
     <requestedDisplayResolution>high</requestedDisplayResolution>
   </iPhone>
   <initialWindow>
-    <title>Starling-DMT</title>
-    <content>Starling-DMT.swf</content>
+    <title>Rasterizer</title>
+    <content>Rasterizer.swf</content>
     <visible>true</visible>
     <fullScreen>true</fullScreen>
     <!--<autoOrients>false</autoOrients>-->
