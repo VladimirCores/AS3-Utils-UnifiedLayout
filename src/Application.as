@@ -2,13 +2,14 @@ package
 {
 	import com.xtdstudios.DMT.DMTBasic;
 	import flash.display.Stage;
+	import flash.geom.Rectangle;
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
 	import starling.display.Sprite;
 	import starling.events.Event;
-	import ui.base.Layout;
-	import ui.base.LayoutProcessor;
-	import ui.MainLayout;
+	import ui.screens.MainScreen;
+	import ui.rasterizer.Rasterizer;
+	import ui.screens.MainScreen;
 	
 	/**
 	 * ...
@@ -16,38 +17,39 @@ package
 	 */
 	public final class Application extends Sprite 
 	{
-		private var _layoutProcessor:LayoutProcessor;
-		private var starlingUIContainer : Sprite;
+		private var _raster:Rasterizer;
 		
 		public function Application() 
 		{
 			super();
+			const viewport:Rectangle = Starling.current.viewPort;
 			
-			_layoutProcessor = new LayoutProcessor("UIContainer", LayoutComplete, false);
-			if (_layoutProcessor.cacheExist() == true) {
-				_layoutProcessor.process(); // will use the existing cache
-			}
-			else LayoutUI(); // will be done one time per device  
+			_raster = new Rasterizer(Starling.current.nativeStage, viewport, RasterizationComplete);
+			
+			const screen:MainScreenBase = new MainScreenBase();
+			
+			_raster.addItemToRaster(screen);
+			//_raster.process():
 		}
 		
 		private function LayoutUI():void {
-			var ns:Stage = Starling.current.nativeStage;
-			var sw:uint = ns.stageWidth;
-			var sh:uint = ns.stageHeight;
-			var mainLayout:MainLayout = new MainLayout(sw, sh);
-			_layoutProcessor.addItemToRaster(mainLayout.layout, MainLayout.NAME);
-			_layoutProcessor.process(); // will rasterize the given assets  
+			//const ns:Stage = Starling.current.nativeStage;
+			//const sw:uint = ns.stageWidth;
+			//const sh:uint = ns.stageHeight;
+			//const mainLayout:MainScreen = new MainScreen(sw, sh);
+			//_raster.addItemToRaster(mainLayout, MainScreen.NAME);
+			//_raster.process(); // will rasterize the given assets  
 		}
 		
 		//==================================================================================================
-		private function LayoutComplete():void {
+		private function RasterizationComplete():void {
 		//==================================================================================================
-			starlingUIContainer = _layoutProcessor.getAssetByUniqueAlias(MainLayout.NAME) as Sprite;
-			starlingUIContainer.addEventListener(Event.TRIGGERED, Handle_Button_Triggered);
-			addChild(starlingUIContainer);
+			//starlingUIContainer = _raster.getAssetByUniqueAlias(MainScreen.NAME) as Sprite;
+			//starlingUIContainer.addEventListener(Event.TRIGGERED, Handle_ButtonTriggered);
+			//addChild(starlingUIContainer);
 		}
 		
-		private function Handle_Button_Triggered(e:Event):void 
+		private function Handle_ButtonTriggered(e:Event):void 
 		{
 			trace((e.target as DisplayObject).name);
 		}

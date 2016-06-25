@@ -46,10 +46,10 @@ package
 			stage.align 			= StageAlign.TOP_LEFT;
 			stage.scaleMode 		= StageScaleMode.NO_SCALE;
 			stage.autoOrients 		= false;
-			stage.color				= 0xf5f5f5;
+			stage.color				= 0x232323;
 			stage.displayState		= StageDisplayState.FULL_SCREEN;
 			stage.setAspectRatio('landscape');
-			stage.quality			= StageQuality.BEST;
+			stage.quality			= StageQuality.HIGH;
 			NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.NORMAL;
 			NativeApplication.nativeApplication.autoExit = true;
 		}
