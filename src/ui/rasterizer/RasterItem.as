@@ -17,16 +17,49 @@ package ui.rasterizer
 		private var _rect:Rectangle;
 		private var _name:String;
 		
-		public function RasterItem(id:uint, name:String, child:DisplayObject, position:Point = null ) 
-		{
+		private var _type:int;
+		private var _lid:String;
+		
+		public function RasterItem( 
+			id			: uint, 
+			lid			: String,
+			type		: int, 
+			name		: String, 
+			child		: DisplayObject, 
+			position	: Point = null 
+		) {
 			this._name = name;
+			this._lid = lid;
 			this._id = id;
 			this._child = child;
+			this._type = type;
+			
 			_bmd = DisplayUtils.displayObjectToBitmapData(child);
-			_rect = new Rectangle(
+			_rect = new Rectangle (
 				position ? position.x : child.x, 
 				position ? position.y : child.y, 
-				child.width, child.height);
+				child.width, child.height
+			);
+		}
+		
+		public function get width():uint 
+		{
+			return _rect.width;
+		}
+		
+		public function get height():uint 
+		{
+			return _rect.height;
+		}
+		
+		public function get type():int
+		{
+			return _type;
+		}
+		
+		public function get pos():Point
+		{
+			return _rect.topLeft;
 		}
 		
 		public function get child():DisplayObject 
@@ -52,6 +85,11 @@ package ui.rasterizer
 		public function get name():String 
 		{
 			return _name;
+		}
+		
+		public function get lid():String 
+		{
+			return _lid;
 		}
 	}
 }

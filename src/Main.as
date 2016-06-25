@@ -17,6 +17,7 @@ package
 	 * ...
 	 * @author Vladimir Minkin
 	 */
+	[SWF(frameRate = "60", width="1920", height="1080", backgroundColor = "0x232323")]
 	public class Main extends Sprite 
 	{
 		public function Main() 
@@ -46,10 +47,10 @@ package
 			stage.align 			= StageAlign.TOP_LEFT;
 			stage.scaleMode 		= StageScaleMode.NO_SCALE;
 			stage.autoOrients 		= false;
-			stage.color				= 0x232323;
 			stage.displayState		= StageDisplayState.FULL_SCREEN;
-			stage.setAspectRatio('landscape');
-			stage.quality			= StageQuality.HIGH;
+			//stage.setAspectRatio('landscape');
+			//stage.setAspectRatio('portrait');
+			stage.quality			= StageQuality.BEST;
 			NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.NORMAL;
 			NativeApplication.nativeApplication.autoExit = true;
 		}

@@ -1,6 +1,5 @@
 package 
 {
-	import com.xtdstudios.DMT.DMTBasic;
 	import flash.display.Stage;
 	import flash.geom.Rectangle;
 	import starling.core.Starling;
@@ -17,36 +16,34 @@ package
 	 */
 	public final class Application extends Sprite 
 	{
+		static public const RASTERIZER:String = "rasterizerNameMain";
+		static public const LAYOUT_NAME_MAIN_SCREEN:String = "layoutNameMainScreen";
+		
 		private var _raster:Rasterizer;
 		
 		public function Application() 
 		{
 			super();
 			const viewport:Rectangle = Starling.current.viewPort;
+			const mainScreenLayout:MainScreenBase = new MainScreenBase();
 			
-			_raster = new Rasterizer(Starling.current.nativeStage, viewport, RasterizationComplete);
+			_raster = new Rasterizer(
+				RASTERIZER, viewport, 
+				RasterizationComplete
+			);
 			
-			const screen:MainScreenBase = new MainScreenBase();
-			
-			_raster.addItemToRaster(screen);
-			//_raster.process():
-		}
-		
-		private function LayoutUI():void {
-			//const ns:Stage = Starling.current.nativeStage;
-			//const sw:uint = ns.stageWidth;
-			//const sh:uint = ns.stageHeight;
-			//const mainLayout:MainScreen = new MainScreen(sw, sh);
-			//_raster.addItemToRaster(mainLayout, MainScreen.NAME);
-			//_raster.process(); // will rasterize the given assets  
+			//if (!_raster.isCacheExist) {
+				_raster.addLayoutToRaster(mainScreenLayout, LAYOUT_NAME_MAIN_SCREEN);
+			//}
+			_raster.process(false);
 		}
 		
 		//==================================================================================================
 		private function RasterizationComplete():void {
 		//==================================================================================================
-			//starlingUIContainer = _raster.getAssetByUniqueAlias(MainScreen.NAME) as Sprite;
-			//starlingUIContainer.addEventListener(Event.TRIGGERED, Handle_ButtonTriggered);
-			//addChild(starlingUIContainer);
+			var layoutByID:Sprite = _raster.getLayoutByID(LAYOUT_NAME_MAIN_SCREEN);
+			layoutByID.addEventListener(Event.TRIGGERED, Handle_ButtonTriggered);
+			this.addChild(layoutByID);
 		}
 		
 		private function Handle_ButtonTriggered(e:Event):void 

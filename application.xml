@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<application xmlns="http://ns.adobe.com/air/application/19.0">
+<application xmlns="http://ns.adobe.com/air/application/21.0">
   <id>air.Rasterizer</id>
   <versionNumber>0.1</versionNumber>
   <supportedProfiles>mobileDevice</supportedProfiles>
@@ -37,6 +37,7 @@
     <!-- required for 3D -->
     <systemChrome>standard</systemChrome>
     <aspectRatio>landscape</aspectRatio>
+    <!--<aspectRatio>portrait</aspectRatio>-->
   </initialWindow>
   <icon>
     <image48x48>icons/icon_48.png</image48x48>
