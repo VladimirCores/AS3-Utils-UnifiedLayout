@@ -4,6 +4,8 @@ package
 	import flash.desktop.SystemIdleMode;
 	import flash.display.StageDisplayState;
 	import flash.display.StageQuality;
+	import flash.display3D.Context3DProfile;
+	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -60,7 +62,7 @@ package
 		//==================================================================================================
 			Starling.multitouchEnabled = true;
 			var viewport:Rectangle = stage.fullScreenSourceRect;
-			var starling:Starling = new Starling(Application, stage, viewport);
+			var starling:Starling = new Starling(Application, stage, viewport, null, Context3DRenderMode.AUTO, Context3DProfile.BASELINE_EXTENDED);
 			starling.start();
 		}
 		

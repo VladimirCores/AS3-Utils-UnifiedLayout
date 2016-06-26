@@ -1,0 +1,52 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="screens/_settings/settings_title" itemID="576fdee7-0000018a" lastModified="1466949351" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="settings_title">
+      <layers>
+        <DOMLayer name="constrain" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMComponentInstance libraryItemName="NConstrain" uniqueID="1">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <parametersAsXML><![CDATA[   <property id="constrainX">
+      <Inspectable name="constarainX" variable="constrainX" category="" verbose="0" defaultValue="center" enumeration="left,right,center,none" type="List"/>
+   </property>
+   <property id="constrainY">
+      <Inspectable name="constarainY" variable="constrainY" category="" verbose="0" defaultValue="top" enumeration="top,bottom,center,none" type="List"/>
+   </property>
+   <property id="scale">
+      <Inspectable name="scale" variable="scale" category="" verbose="0" defaultValue="prop" enumeration="prop,dpi" type="List"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText width="292.35" height="60.05" isSelectable="false" lineType="multiline no wrap">
+                  <matrix>
+                    <Matrix tx="2" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>SETTINGS</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" lineHeight="60.05" size="49" bitmapSize="980" face="Onky-Italic"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

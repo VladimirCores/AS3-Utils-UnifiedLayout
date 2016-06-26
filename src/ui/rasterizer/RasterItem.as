@@ -42,6 +42,11 @@ package ui.rasterizer
 			);
 		}
 		
+		public function getSize(offset:uint = 0):uint 
+		{
+			return (_rect.height + offset) * (_rect.width + offset);
+		}
+		
 		public function get width():uint 
 		{
 			return _rect.width;

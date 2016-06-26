@@ -1,0 +1,62 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="screens/_main/g_avatar" itemID="54bd24b7-000001ff" symbolType="graphic" lastModified="1466939768" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="g_avatar">
+      <layers>
+        <DOMLayer name="constrain" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMComponentInstance libraryItemName="NConstrain" name="constrain" uniqueID="3">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <parametersAsXML><![CDATA[   <property id="constrainX">
+      <Inspectable name="constarainX" variable="constrainX" category="" verbose="0" defaultValue="left" enumeration="left,right,center,none" type="List"/>
+   </property>
+   <property id="constrainY">
+      <Inspectable name="constarainY" variable="constrainY" category="" verbose="0" defaultValue="top" enumeration="top,bottom,center,none" type="List"/>
+   </property>
+   <property id="scale">
+      <Inspectable name="scale" variable="scale" category="" verbose="0" defaultValue="prop" enumeration="prop,dpi" type="List"/>
+   </property>
+]]></parametersAsXML>
+                </DOMComponentInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="graphic" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF6600"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#666699"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#666666"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1320 660[1320 933 1126 1126!1126 1126[933 1320 660 1320!660 1320[387 1320 193 1126!193 1126[0 933 0 660!0 660[0 387 193 193!193 193[387 0 660 0!660 0[933 0 1126 193!1126 193[1320 387 1320 660"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1036 888[1036 1024 940 1120!940 1120[844 1216 708 1216!708 1216[572 1216 476 1120!476 1120[380 1024 380 888!380 888[380 752 476 656!476 656[572 560 708 560!708 560[844 560 940 656!940 656[1036 752 1036 888"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

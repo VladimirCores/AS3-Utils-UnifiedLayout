@@ -1,0 +1,93 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="screens/screen_main" itemID="5736e6c2-00000146" linkageExportForAS="true" linkageClassName="MainScreenBase" lastModified="1466956348" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="screen_main">
+      <layers>
+        <DOMLayer name="icons" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="screens/_main/mc_icons" name="icons">
+                  <matrix>
+                    <Matrix tx="517" ty="372"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9" y="9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="types" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="screens/_main/g_footer" name="footer" centerPoint3DX="275" centerPoint3DY="380">
+                  <matrix>
+                    <Matrix ty="360"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="275" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="screens/_main/g_avatar" name="avatar" selected="true" centerPoint3DX="43" centerPoint3DY="43">
+                  <matrix>
+                    <Matrix tx="10" ty="10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33" y="33"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="screens/_main/slider" name="slider" centerPoint3DX="175" centerPoint3DY="100">
+                  <matrix>
+                    <Matrix tx="175" ty="100"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="screens/_main/btn_confirm" name="btn_translate" symbolType="button">
+                  <matrix>
+                    <Matrix tx="450" ty="30"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="screens/_main/g_nav_right" name="navRight">
+                  <matrix>
+                    <Matrix tx="512" ty="179.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.5" y="20.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="screens/_main/g_nav_left" name="navLeft">
+                  <matrix>
+                    <Matrix tx="15" ty="179.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.5" y="20.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="background" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="graphics/g_background" name="background">
+                  <transformationPoint>
+                    <Point x="275" y="200"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
