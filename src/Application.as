@@ -41,13 +41,15 @@ package
 			
 			start = getTimer();
 			
-			//if (!_raster.isCacheExist) {
+			var useChache:Boolean = true;
+			
+			if (!_raster.isCacheExist || !useChache) {
 				const mainScreenLayout:MainScreenBase = new MainScreenBase();
 				const settingsScreenLayout:SettingScreenBase = new SettingScreenBase();
 				_raster.addLayoutToRaster(mainScreenLayout, LAYOUT_NAME_MAIN_SCREEN);
 				_raster.addLayoutToRaster(settingsScreenLayout, LAYOUT_NAME_SETTINGS_SCREEN);
-			//}
-			_raster.process(false);
+			}
+			_raster.process(useChache);
 			
 			var that:Application = this as Application;
 			Starling.current.nativeStage.addEventListener(KeyboardEvent.KEY_UP, function (e:KeyboardEvent):void 
