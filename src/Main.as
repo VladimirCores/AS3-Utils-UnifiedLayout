@@ -19,7 +19,7 @@ package
 	 * ...
 	 * @author Vladimir Minkin
 	 */
-	[SWF(frameRate = "60", width="1920", height="1080", backgroundColor = "0x232323")]
+	[SWF(frameRate = "60", width="1920", height="1080", backgroundColor = "0xf1f1f1")]
 	public class Main extends Sprite 
 	{
 		public function Main() 

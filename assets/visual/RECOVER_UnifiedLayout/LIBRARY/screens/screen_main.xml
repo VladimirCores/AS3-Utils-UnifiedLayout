@@ -78,7 +78,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="graphics/g_background" name="background">
+                <DOMSymbolInstance libraryItemName="graphics/g_background_screen" name="background">
                   <transformationPoint>
                     <Point x="275" y="200"/>
                   </transformationPoint>

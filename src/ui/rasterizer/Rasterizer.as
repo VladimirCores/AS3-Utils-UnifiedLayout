@@ -86,30 +86,48 @@ package ui.rasterizer
 			_isCacheExist = latestVersion == cacheVersion;
 		}
 		
-		public function addLayoutToRaster(
-			layout:DisplayObjectContainer, layoutID:String = "", 
-			layoutWidth:uint = 0, layoutHeight:uint = 0, proportion:Number = 0
+		public function addElementToRaster(
+			element 	: DisplayObject,
+			storeName	: String,
+			proportion	: Number,
+			position	: Point = null
 		):void {
-			var doc			:DisplayObjectContainer;
-			var mc			:MovieClip;
-			var frame		:DisplayObject;
-			var child		:DisplayObject = layout.getChildByName("background");
-			var childName	:String;
-			var numChildren	:uint = layout.numChildren;
-			var constrain	:NConstrain;
-			var rasterItem	:RasterItem;
+			const isButton:Boolean = element is SimpleButton;
+			const mc:MovieClip = element as MovieClip;
+			var type:int = RasterTypes.IMAGE;
+			if (isButton) type = RasterTypes.BUTTON;
+			else if (mc && mc.totalFrames > 1) type = RasterTypes.MOVIECLIP;
+			
+			position = position ? position : new Point(element.x, element.y);
+			
+			ApplyProportionToChild(element, isButton, proportion);
+			RegisterRasterItem("", type, storeName, element, position);
+		}
+		
+		public function addLayoutToRaster( 
+			layout			: DisplayObjectContainer, 
+			layoutID		: String = "", 
+			layoutWidth		: uint = 0, 
+			layoutHeight	: uint = 0, 
+			proportion		: Number = 0
+		):void {
+			var mc			: MovieClip;
+			var frame		: DisplayObject;
+			var child		: DisplayObject = layout.getChildByName("background");
+			var childName	: String;
+			var numChildren	: uint = layout.numChildren;
+			var rasterItem	: RasterItem;
+			var isButton	: Boolean;
+			
+			var doc	:DisplayObjectContainer;
+			var constrain : NConstrain;
 			
 			var w:uint = _viewPort.width;
 			var h:uint = _viewPort.height;
 			
-			var lt:Point;
-			var rb:Point;
+			var lt:Point, rb:Point;
 			
-			var
-				i		:int,
-				cW		:uint, 
-				cH		:uint
-			;
+			var i:int, cW:uint,  cH:uint;
 
 			layoutWidth = layoutWidth > 0 ? layoutWidth : layout.width;
 			layoutHeight = layoutHeight > 0 ? layoutHeight : layout.height;
@@ -130,9 +148,9 @@ package ui.rasterizer
 			{
 				child = layout.getChildAt(numChildren);
 				childName = child.name;
+				isButton = child is SimpleButton;
 				
 				mc = null;
-				doc = null;
 				
 				cW = child.width;
 				cH = child.height;
@@ -140,28 +158,11 @@ package ui.rasterizer
 				lt = new Point(Math.floor((child.x / layoutWidth) * 100) / 100, Math.floor((child.y / layoutHeight) * 100) / 100);
 				rb = new Point(Math.floor(((child.x + cW) / layoutWidth) * 100) / 100, Math.floor(((child.y + cH) / layoutHeight) * 100) / 100);
 				
-				if (child is SimpleButton)
-				{
-					SimpleButton(child).upState.scaleX = prop; 
-					SimpleButton(child).upState.scaleY = prop; 
-					
-					SimpleButton(child).overState.scaleX = prop; 
-					SimpleButton(child).overState.scaleY = prop; 
-					
-					SimpleButton(child).downState.scaleX = prop; 
-					SimpleButton(child).downState.scaleY = prop;
-					
-					SimpleButton(child).hitTestState.scaleX = prop; 
-					SimpleButton(child).hitTestState.scaleY = prop;
-				} 
-				else
-				{
-					mc = child as MovieClip;
-					child.scaleX = prop; //child.width *= prop;//child.width = (rb.x - lt.x) * w;
-					child.scaleY = prop; //child.height *= prop;//child.height = (rb.y - lt.y) * h;
-				}
+				if(!isButton) mc = child as MovieClip;
 				
-				doc = child is SimpleButton ?  (SimpleButton(child).upState as DisplayObjectContainer) : (child as DisplayObjectContainer);
+				ApplyProportionToChild(child, isButton, prop);
+				
+				doc = isButton ?  (SimpleButton(child).upState as DisplayObjectContainer) : (child as DisplayObjectContainer);
 				if ( doc &&  (constrain = GetConstrainFromChild(doc)))  
 				{
 					switch (constrain.constrainX) {
@@ -183,22 +184,24 @@ package ui.rasterizer
 					child.y = lt.y * h;
 				}
 				
-				if (child is SimpleButton) 
+				//ApplyPositionToChildWithLayout(child, isButton, prop, layoutWidth, layoutHeight);
+				
+				if (isButton) 
 				{
 					BTN_NAME_UP[0] = child.name;
-					RegisterRasterItem(_itemsToRaster.length, layoutID, RasterTypes.BUTTON, BTN_NAME_UP.join(""), SimpleButton(child).upState, new Point(child.x, child.y))
-					RegisterRasterItem(_itemsToRaster.length, layoutID, RasterTypes.BUTTON, childName, SimpleButton(child).downState, new Point(child.x, child.y))
+					RegisterRasterItem(layoutID, RasterTypes.BUTTON, BTN_NAME_UP.join(""), SimpleButton(child).upState, new Point(child.x, child.y))
+					RegisterRasterItem(layoutID, RasterTypes.BUTTON, childName, SimpleButton(child).downState, new Point(child.x, child.y))
 				} 
 				else if (mc != null && mc.totalFrames > 1) 
 				{
 					mc.gotoAndStop(0);
-					RegisterRasterItem(_itemsToRaster.length, layoutID, RasterTypes.MOVIECLIP, childName, mc);
+					RegisterRasterItem(layoutID, RasterTypes.MOVIECLIP, childName, mc);
 					var objectsToRaster:Array = _isObjectAlreadyExist[childName];
 					if(objectsToRaster.length == 0)
 					{
 						for (i = 2; i <= mc.totalFrames; i++) {
 							mc.gotoAndStop(i);
-							RegisterRasterItem(_itemsToRaster.length, childName, RasterTypes.MOVIECLIP, childName+"_"+i, mc);
+							RegisterRasterItem(childName, RasterTypes.MOVIECLIP, childName+"_"+i, mc);
 							mc.nextFrame();
 						}
 						mc.gotoAndStop(0);
@@ -206,13 +209,12 @@ package ui.rasterizer
 				}
 				else
 				{
-					RegisterRasterItem(_itemsToRaster.length, layoutID, RasterTypes.IMAGE, child.name, child);
+					RegisterRasterItem(layoutID, RasterTypes.IMAGE, child.name, child);
 				}
 			}
 		}
 		
-		public function process(usecache:Boolean = true):void 
-		{
+		public function process(usecache:Boolean = true):void {
 			if (_isCacheExist && usecache) {
 				ProcessFromLoad();
 			} else {
@@ -225,35 +227,17 @@ package ui.rasterizer
 			var subTextures		: XMLList = _atlasXML.SubTexture.(@lid==lid);
 			var subTexture		: Texture;
 			var subTextureName	: String;
+			var subTextureType	: int;
 			var displayObject	: starling.display.DisplayObject;
 			
 			for each (var subTextureXML:XML in subTextures) 
 			{ 
 				subTextureName = subTextureXML.@name;
 				//trace(subTextureName, "subTextureXML.@type", subTextureXML.@type);
-				switch(int(subTextureXML.@type))
-				{
-					case RasterTypes.IMAGE:	 
-						subTexture = _atlasTexture.getTexture(subTextureName);
-						displayObject = new Image(subTexture); 
-					break;
-					case RasterTypes.BUTTON:	
-						subTexture = _atlasTexture.getTexture(subTextureName);
-						if (displayObject is Button) {
-							Button(displayObject).downState = subTexture;
-							Button(displayObject).scaleWhenDown = 1;
-						} else {
-							displayObject = new Button(subTexture); 
-						}
-					break;
-				case RasterTypes.MOVIECLIP:
-					displayObject = new starling.display.MovieClip(_atlasTexture.getTextures(subTextureName));
-					if (playMC) {
-						starling.display.MovieClip(displayObject).fps = fps;
-						Starling.juggler.add(starling.display.MovieClip(displayObject));
-					}
-					break;
-					default: displayObject = new Sprite(); break;
+				displayObject = GetStarlingDisplayObjectByTypeAndName(int(subTextureXML.@type), subTextureName);
+				if (displayObject is starling.display.MovieClip && playMC) {
+					starling.display.MovieClip(displayObject).fps = fps;
+					Starling.juggler.add(starling.display.MovieClip(displayObject));
 				}
 				
 				displayObject.x = int(subTextureXML.@px);
@@ -261,6 +245,43 @@ package ui.rasterizer
 				displayObject.name = subTextureName;
 				
 				result.addChild(displayObject);
+			}
+			return result;
+		}
+		
+		public function getElementByName(name:String):starling.display.DisplayObject {
+			var subTextureXML:XMLList = _atlasXML.SubTexture.(@name == name);
+			const result:starling.display.DisplayObject = GetStarlingDisplayObjectByTypeAndName(int(subTextureXML.@type), name);
+			result.x = int(subTextureXML.@px);
+			result.y = int(subTextureXML.@py);
+			result.name = name;
+			return result;
+		}
+		
+		private function GetStarlingDisplayObjectByTypeAndName(type:int, name:String):starling.display.DisplayObject {
+			var result:starling.display.DisplayObject;
+			var texture:Texture;
+			switch(type)
+			{
+				case RasterTypes.IMAGE:	 
+					texture = _atlasTexture.getTexture(name);
+					result = new Image(texture); 
+				break;
+				case RasterTypes.BUTTON:	
+					if (result is Button) {
+						texture = _atlasTexture.getTexture(name.replace("up", ""));
+						Button(result).downState = texture;
+						Button(result).scaleWhenDown = 1;
+					} else {
+						name = name.indexOf("up") == -1 ? name + "up" : name;
+						texture = _atlasTexture.getTexture(name);
+						result = new Button(texture); 
+					}
+				break;
+			case RasterTypes.MOVIECLIP:
+				result = new starling.display.MovieClip(_atlasTexture.getTextures(name));
+				break;
+				default: result = new Sprite(); break;
 			}
 			return result;
 		}
@@ -444,13 +465,13 @@ package ui.rasterizer
 		}
 		
 		private function RegisterRasterItem(
-			childID		:int, 
 			layoutID	:String, 
 			type		:int, 
 			name		:String,
 			entity		:DisplayObject,
 			position	:Point = null
 		):void {
+			const childID:uint = _itemsToRaster.length;
 			const rasterItem:RasterItem = new RasterItem(
 				childID, layoutID, type, name, 
 				entity, position
@@ -463,6 +484,31 @@ package ui.rasterizer
 			} else {
 				duplicates.push(rasterItem);
 			}
+		}
+		
+		private function ApplyProportionToChild(child:DisplayObject, isBtn:Boolean, prop:Number):Boolean {
+			var result:Boolean = false;
+			if (isBtn)
+			{
+				SimpleButton(child).upState.scaleX = prop; 
+				SimpleButton(child).upState.scaleY = prop; 
+				
+				SimpleButton(child).overState.scaleX = prop; 
+				SimpleButton(child).overState.scaleY = prop; 
+				
+				SimpleButton(child).downState.scaleX = prop; 
+				SimpleButton(child).downState.scaleY = prop;
+				
+				SimpleButton(child).hitTestState.scaleX = prop; 
+				SimpleButton(child).hitTestState.scaleY = prop;
+			} 
+			else
+			{
+				result = true;
+				child.scaleX = prop; //child.width *= prop;//child.width = (rb.x - lt.x) * w;
+				child.scaleY = prop; //child.height *= prop;//child.height = (rb.y - lt.y) * h;
+			}
+			return result;
 		}
 		
 		public function get isCacheExist():Boolean { return _isCacheExist; }

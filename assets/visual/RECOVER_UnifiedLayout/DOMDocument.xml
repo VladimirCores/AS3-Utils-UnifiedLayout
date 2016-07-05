@@ -1,24 +1,29 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.7" creatorInfo="Adobe Animate CC" platform="Windows" versionInfo="Saved by Animate Windows 15.1 build 13" majorVersion="15" minorVersion="1" buildNumber="13" viewAngle3D="1" vanishingPoint3DX="0" vanishingPoint3DY="0" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" filetypeGUID="DD0DDBBF-5BEF-45B2-9F24-A3048D2A676F">
      <folders>
-          <DOMFolderItem name="graphics" itemID="576fdea4-00000185"/>
+          <DOMFolderItem name="graphics" itemID="576fdea4-00000185" isExpanded="true"/>
+          <DOMFolderItem name="labels" itemID="577ba311-000006f3" isExpanded="true"/>
+          <DOMFolderItem name="popups" itemID="577ba220-000006e1" isExpanded="true"/>
           <DOMFolderItem name="screens" itemID="54bd2f6d-00000216" isExpanded="true"/>
           <DOMFolderItem name="screens/_main" itemID="576fd85f-0000015b" isExpanded="true"/>
-          <DOMFolderItem name="screens/_settings" itemID="576fdac4-00000173" isExpanded="true"/>
+          <DOMFolderItem name="screens/_settings" itemID="576fdac4-00000173"/>
      </folders>
      <symbols>
-          <Include href="graphics/g_background.xml" itemIcon="1" loadImmediate="false" itemID="54bd3a93-0000022c" lastModified="1421687443"/>
+          <Include href="graphics/g_background_popup.xml" itemIcon="1" loadImmediate="false" itemID="577ba258-000006e6" lastModified="1467720280"/>
+          <Include href="graphics/g_background_screen.xml" itemIcon="1" loadImmediate="false" itemID="577ba25f-000006e7" lastModified="1467720287"/>
+          <Include href="labels/label_available.xml" itemID="577ba302-000006e9" lastModified="1467722492"/>
           <Include href="NConstrain.xml" itemID="576e2d90-00000276" lastModified="1466957976"/>
+          <Include href="popups/popup_confirm.xml" loadImmediate="false" itemID="577ba21a-000006da" lastModified="1467720299"/>
           <Include href="screens/_main/btn_confirm.xml" itemIcon="0" loadImmediate="false" itemID="54bd251b-00000203" lastModified="1466941129"/>
           <Include href="screens/_main/g_avatar.xml" itemIcon="1" loadImmediate="false" itemID="54bd24b7-000001ff" lastModified="1466939768"/>
           <Include href="screens/_main/g_footer.xml" itemIcon="1" loadImmediate="false" itemID="54bd245a-000001fa" lastModified="1466948280"/>
           <Include href="screens/_main/g_nav_left.xml" itemIcon="1" loadImmediate="false" itemID="576e33b0-0000014b" lastModified="1466840355"/>
           <Include href="screens/_main/g_nav_right.xml" itemIcon="1" loadImmediate="false" itemID="576e33aa-00000142" lastModified="1466840351"/>
-          <Include href="screens/_main/mc_icons.xml" loadImmediate="false" itemID="576fdf15-0000018c" lastModified="1466955061"/>
+          <Include href="screens/_main/mc_icons.xml" loadImmediate="false" itemID="576fdf15-0000018c" lastModified="1467720406"/>
           <Include href="screens/_main/slider.xml" loadImmediate="false" itemID="54bd45d6-00000230" lastModified="1466941275"/>
           <Include href="screens/_settings/btn_close.xml" itemIcon="0" loadImmediate="false" itemID="576fdb08-00000175" lastModified="1467711940"/>
           <Include href="screens/_settings/settings_title.xml" loadImmediate="false" itemID="576fdee7-0000018a" lastModified="1466949351"/>
           <Include href="screens/screen_main.xml" itemID="5736e6c2-00000146" lastModified="1467711824"/>
-          <Include href="screens/screen_settings.xml" itemID="576fda97-0000016f" lastModified="1467711974"/>
+          <Include href="screens/screen_settings.xml" itemID="576fda97-0000016f" lastModified="1467722429"/>
      </symbols>
      <timelines>
           <DOMTimeline name="Scene 1">
@@ -35,6 +40,9 @@
      </timelines>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="5883" publishTime="1467722495"/>
+          <PublishItem publishSize="5447" publishTime="1467720507"/>
+          <PublishItem publishSize="5297" publishTime="1467715153"/>
           <PublishItem publishSize="5293" publishTime="1467714598"/>
           <PublishItem publishSize="5297" publishTime="1467711948"/>
           <PublishItem publishSize="5297" publishTime="1467711943"/>
@@ -52,8 +60,5 @@
           <PublishItem publishSize="5592" publishTime="1466957735"/>
           <PublishItem publishSize="5592" publishTime="1466957654"/>
           <PublishItem publishSize="5592" publishTime="1466957176"/>
-          <PublishItem publishSize="5592" publishTime="1466957137"/>
-          <PublishItem publishSize="5598" publishTime="1466957128"/>
-          <PublishItem publishSize="5598" publishTime="1466957056"/>
      </publishHistory>
 </DOMDocument>

@@ -8,6 +8,7 @@ package
 	import flash.utils.getTimer;
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
+	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import ui.screens.MainScreen;
@@ -22,8 +23,10 @@ package
 	{
 		static public const RASTERIZER:String = "rasterizerNameMain";
 		
-		static public const LAYOUT_NAME_MAIN_SCREEN:String = "layoutNameMainScreen";
-		static public const LAYOUT_NAME_SETTINGS_SCREEN:String = "layoutNameSettingsScreen";
+		static public const LAYOUT_NAME_MAIN_SCREEN:String = "layout_main_screen";
+		static public const LAYOUT_NAME_SETTINGS_SCREEN:String = "layout_settings_screen";
+		
+		static public const ELEMENT_LABELS_AVAILABLE:String = "labels_available";
 		
 		private var _raster:Rasterizer;
 		private var screens:Array = new Array();
@@ -46,8 +49,12 @@ package
 			if (!_raster.isCacheExist || !useChache) {
 				const mainScreenLayout:MainScreenBase = new MainScreenBase();
 				const settingsScreenLayout:SettingScreenBase = new SettingScreenBase();
+				
 				_raster.addLayoutToRaster(mainScreenLayout, LAYOUT_NAME_MAIN_SCREEN);
 				_raster.addLayoutToRaster(settingsScreenLayout, LAYOUT_NAME_SETTINGS_SCREEN);
+				
+				const labelAvailable:LabelAvailable = new LabelAvailable();
+				_raster.addElementToRaster(labelAvailable, ELEMENT_LABELS_AVAILABLE, 2);
 			}
 			_raster.process(useChache);
 			
@@ -64,12 +71,17 @@ package
 		//==================================================================================================
 		private function RasterizationComplete():void {
 		//==================================================================================================
-			var mainLayout:Sprite = _raster.getLayoutByID(LAYOUT_NAME_MAIN_SCREEN);
+			const mainLayout:Sprite = _raster.getLayoutByID(LAYOUT_NAME_MAIN_SCREEN);
 			mainLayout.addEventListener(Event.TRIGGERED, Handle_ButtonTriggered);
 			this.addChild(mainLayout);
 			
-			var settingsLayout:Sprite = _raster.getLayoutByID(LAYOUT_NAME_SETTINGS_SCREEN);
+			const settingsLayout:Sprite = _raster.getLayoutByID(LAYOUT_NAME_SETTINGS_SCREEN);
 			screens.push(settingsLayout);
+			
+			
+			const labelAvailable:Image = _raster.getElementByName(ELEMENT_LABELS_AVAILABLE) as Image;
+			labelAvailable.x = 100;
+			settingsLayout.addChild(labelAvailable);
 			
 			trace((getTimer() - start) + "ms");
 		}

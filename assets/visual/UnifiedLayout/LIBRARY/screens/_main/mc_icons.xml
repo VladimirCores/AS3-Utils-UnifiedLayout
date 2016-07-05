@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="screens/_main/mc_icons" itemID="576fdf15-0000018c" lastModified="1466955061" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="screens/_main/mc_icons" itemID="576fdf15-0000018c" lastModified="1467720406" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="mc_icons" currentFrame="6">
+    <DOMTimeline name="mc_icons">
       <layers>
         <DOMLayer name="constrain" color="#9933CC" autoNamed="false">
           <frames>

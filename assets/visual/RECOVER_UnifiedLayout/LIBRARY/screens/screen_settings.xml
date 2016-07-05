@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="screens/screen_settings" itemID="576fda97-0000016f" linkageExportForAS="true" linkageClassName="SettingScreenBase" lastModified="1467711974" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="screens/screen_settings" itemID="576fda97-0000016f" linkageExportForAS="true" linkageClassName="SettingScreenBase" lastModified="1467722429" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="screen_settings">
       <layers>
@@ -54,7 +54,7 @@
                     <Point x="11.5" y="20.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="screens/_main/mc_icons" name="icons" selected="true">
+                <DOMSymbolInstance libraryItemName="screens/_main/mc_icons" name="icons">
                   <matrix>
                     <Matrix tx="514" ty="366.95"/>
                   </matrix>
@@ -70,7 +70,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="graphics/g_background" name="background">
+                <DOMSymbolInstance libraryItemName="graphics/g_background_screen" name="background">
                   <transformationPoint>
                     <Point x="275" y="200"/>
                   </transformationPoint>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="graphics/g_background" itemID="54bd3a93-0000022c" symbolType="graphic" lastModified="1421687443">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="graphics/g_background_popup" itemID="577ba258-000006e6" symbolType="graphic" lastModified="1467720280">
   <timeline>
-    <DOMTimeline name="g_background">
+    <DOMTimeline name="g_background_popup">
       <layers>
         <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true">
           <frames>
@@ -9,11 +9,11 @@
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#CCCCCC"/>
+                      <SolidColor color="#CCFF00"/>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!0 0S2|11000 0!11000 0|11000 8000!11000 8000|0 8000!0 8000|0 0"/>
+                    <Edge fillStyle1="1" edges="!0 0S2|6394 0!6394 0|6394 1921!6394 1921|0 1921!0 1921|0 0"/>
                   </edges>
                 </DOMShape>
               </elements>
