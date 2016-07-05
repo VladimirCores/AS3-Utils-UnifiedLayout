@@ -41,7 +41,7 @@ package
 			
 			start = getTimer();
 			
-			var useChache:Boolean = true;
+			var useChache:Boolean = false;
 			
 			if (!_raster.isCacheExist || !useChache) {
 				const mainScreenLayout:MainScreenBase = new MainScreenBase();

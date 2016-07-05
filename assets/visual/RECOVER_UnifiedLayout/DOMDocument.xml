@@ -18,7 +18,7 @@
           <Include href="screens/_settings/btn_close.xml" itemIcon="0" loadImmediate="false" itemID="576fdb08-00000175" lastModified="1467711940"/>
           <Include href="screens/_settings/settings_title.xml" loadImmediate="false" itemID="576fdee7-0000018a" lastModified="1466949351"/>
           <Include href="screens/screen_main.xml" itemID="5736e6c2-00000146" lastModified="1467711824"/>
-          <Include href="screens/screen_settings.xml" itemID="576fda97-0000016f" lastModified="1467714597"/>
+          <Include href="screens/screen_settings.xml" itemID="576fda97-0000016f" lastModified="1467711974"/>
      </symbols>
      <timelines>
           <DOMTimeline name="Scene 1">
@@ -35,6 +35,7 @@
      </timelines>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="5293" publishTime="1467714598"/>
           <PublishItem publishSize="5297" publishTime="1467711948"/>
           <PublishItem publishSize="5297" publishTime="1467711943"/>
           <PublishItem publishSize="5133" publishTime="1467711832"/>
@@ -54,6 +55,5 @@
           <PublishItem publishSize="5592" publishTime="1466957137"/>
           <PublishItem publishSize="5598" publishTime="1466957128"/>
           <PublishItem publishSize="5598" publishTime="1466957056"/>
-          <PublishItem publishSize="5029" publishTime="1466957027"/>
      </publishHistory>
 </DOMDocument>

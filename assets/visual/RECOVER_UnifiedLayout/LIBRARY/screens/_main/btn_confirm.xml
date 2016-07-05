@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="screens/_settings/btn_close" itemID="576fdb08-00000175" symbolType="button" lastModified="1467711940" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="screens/_main/btn_confirm" itemID="54bd251b-00000203" symbolType="button" lastModified="1466941129" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="btn_close" currentFrame="2">
+    <DOMTimeline name="btn_confirm">
       <layers>
         <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true">
           <frames>
@@ -9,23 +9,27 @@
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#0066CC"/>
+                      <SolidColor color="#FFFF00"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CC9933"/>
                     </FillStyle>
                   </fills>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal">
                         <fill>
-                          <SolidColor color="#666666"/>
+                          <SolidColor color="#CC0000"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!640 320[#27F.F8 #1C5.03 555 683.5!555 683.5[#1D6.17 #391.F4 340 960!340 960[#D1.E8 #3EE.0B 105 729.5!105 729.5[#0.07 #1C4.FC 0 320!0 320[0 188 93 94!93 94[187 0 320 0!320 0[453 0 546 94!546 94[640 188 640 320"/>
+                    <Edge fillStyle1="2" edges="!0 0|2000 0!2000 0|2000 600!2000 600|0 600!0 600|0 0"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!1100 350[1100 412 1056 456!1056 456[1012 500 950 500!950 500[888 500 844 456!844 456[800 412 800 350!800 350[800 288 844 244!844 244[888 200 950 200!950 200[1012 200 1056 244!1056 244[1100 288 1100 350"/>
                   </edges>
                 </DOMShape>
-                <DOMComponentInstance libraryItemName="NConstrain" uniqueID="1">
+                <DOMComponentInstance libraryItemName="NConstrain" name="constrain" accName="constrain" hasAccessibleData="true" uniqueID="5">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -47,20 +51,24 @@
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#0066CC"/>
+                      <SolidColor color="#6666FF"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#CCFF99"/>
                     </FillStyle>
                   </fills>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal">
                         <fill>
-                          <SolidColor color="#666666"/>
+                          <SolidColor color="#00CC33"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!640 320[640 453 546 546!546 546[453 640 320 640!320 640[187 640 93 546!93 546[0 453 0 320!0 320[0 188 93 94!93 94[187 0 320 0!320 0[453 0 546 94!546 94[640 188 640 320"/>
+                    <Edge fillStyle1="1" edges="!0 0|2000 0!2000 0|2000 600!2000 600|0 600!0 600|0 0"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1100 350[1100 412 1056 456!1056 456[1012 500 950 500!950 500[888 500 844 456!844 456[800 412 800 350!800 350[800 288 844 244!844 244[888 200 950 200!950 200[1012 200 1056 244!1056 244[1100 288 1100 350"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -70,20 +78,11 @@
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#CCFF00"/>
+                      <SolidColor color="#66FF00"/>
                     </FillStyle>
                   </fills>
-                  <strokes>
-                    <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal">
-                        <fill>
-                          <SolidColor color="#666666"/>
-                        </fill>
-                      </SolidStroke>
-                    </StrokeStyle>
-                  </strokes>
                   <edges>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!640 320[#27F.F8 #1C5.03 555 683.5!555 683.5[#1D6.17 #391.F4 340 960!340 960[#D1.E8 #3EE.0B 105 729.5!105 729.5[#0.07 #1C4.FC 0 320!0 320[0 188 93 94!93 94[187 0 320 0!320 0[453 0 546 94!546 94[640 188 640 320"/>
+                    <Edge fillStyle1="1" edges="!0 0|2000 0!2000 0|2000 600!2000 600|0 600!0 600|0 0"/>
                   </edges>
                 </DOMShape>
               </elements>

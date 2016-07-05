@@ -19,6 +19,7 @@ package ui.rasterizer
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
 	import nest.controls.NConstrain;
 	
@@ -33,7 +34,7 @@ package ui.rasterizer
 	
 	/**
 	 * ...
-	 * @author ...
+	 * @author Vladimir Minkin
 	 */
 	public class Rasterizer extends EventDispatcher
 	{
@@ -56,6 +57,8 @@ package ui.rasterizer
 		private var _minAtlasSize:uint;
 		private var _maxAtlasSize:uint;
 		private var _currentAtlasSize:uint;
+		
+		private const _isObjectAlreadyExist:Dictionary = new Dictionary(true);
 		
 		public function Rasterizer(
 			name			: String,
@@ -91,6 +94,7 @@ package ui.rasterizer
 			var mc			:MovieClip;
 			var frame		:DisplayObject;
 			var child		:DisplayObject = layout.getChildByName("background");
+			var childName	:String;
 			var numChildren	:uint = layout.numChildren;
 			var constrain	:NConstrain;
 			var rasterItem	:RasterItem;
@@ -109,15 +113,6 @@ package ui.rasterizer
 
 			layoutWidth = layoutWidth > 0 ? layoutWidth : layout.width;
 			layoutHeight = layoutHeight > 0 ? layoutHeight : layout.height;
-
-			//if (w >= h) {
-				//i = w;
-				//w = h;
-				//h = i;
-				//i = layoutWidth;
-				//layoutWidth = layoutHeight;
-				//layoutHeight = i;
-			//}
 			
 			trace("layoutWidth, layoutHeight:", w, layoutWidth, h, layoutHeight);
 			
@@ -134,6 +129,7 @@ package ui.rasterizer
 			while(numChildren--)
 			{
 				child = layout.getChildAt(numChildren);
+				childName = child.name;
 				
 				mc = null;
 				doc = null;
@@ -191,19 +187,21 @@ package ui.rasterizer
 				{
 					BTN_NAME_UP[0] = child.name;
 					RegisterRasterItem(_itemsToRaster.length, layoutID, RasterTypes.BUTTON, BTN_NAME_UP.join(""), SimpleButton(child).upState, new Point(child.x, child.y))
-					RegisterRasterItem(_itemsToRaster.length, layoutID, RasterTypes.BUTTON, child.name, SimpleButton(child).downState, new Point(child.x, child.y))
+					RegisterRasterItem(_itemsToRaster.length, layoutID, RasterTypes.BUTTON, childName, SimpleButton(child).downState, new Point(child.x, child.y))
 				} 
 				else if (mc != null && mc.totalFrames > 1) 
 				{
 					mc.gotoAndStop(0);
-					
-					RegisterRasterItem(_itemsToRaster.length, layoutID, RasterTypes.MOVIECLIP, child.name, mc);
-					
-					for (i = 1; i < mc.totalFrames; i++) 
+					RegisterRasterItem(_itemsToRaster.length, layoutID, RasterTypes.MOVIECLIP, childName, mc);
+					var objectsToRaster:Array = _isObjectAlreadyExist[childName];
+					if(objectsToRaster.length == 0)
 					{
-						mc.gotoAndStop(i);
-						RegisterRasterItem(_itemsToRaster.length, child.name, RasterTypes.MOVIECLIP, child.name+"_"+i, mc);
-						mc.nextFrame();
+						for (i = 2; i <= mc.totalFrames; i++) {
+							mc.gotoAndStop(i);
+							RegisterRasterItem(_itemsToRaster.length, childName, RasterTypes.MOVIECLIP, childName+"_"+i, mc);
+							mc.nextFrame();
+						}
+						mc.gotoAndStop(0);
 					}
 				}
 				else
@@ -222,7 +220,7 @@ package ui.rasterizer
 			}
 		}
 		
-		public function getLayoutByID(lid:String):Sprite {
+		public function getLayoutByID(lid:String, playMC:Boolean = false, fps:uint = 30 ):Sprite {
 			var result			: Sprite = new Sprite();
 			var subTextures		: XMLList = _atlasXML.SubTexture.(@lid==lid);
 			var subTexture		: Texture;
@@ -248,10 +246,12 @@ package ui.rasterizer
 							displayObject = new Button(subTexture); 
 						}
 					break;
-					case RasterTypes.MOVIECLIP:
-						displayObject = new starling.display.MovieClip(_atlasTexture.getTextures(subTextureName));
-						//starling.display.MovieClip(displayObject).fps = 10;
-						//Starling.juggler.add(starling.display.MovieClip(displayObject));
+				case RasterTypes.MOVIECLIP:
+					displayObject = new starling.display.MovieClip(_atlasTexture.getTextures(subTextureName));
+					if (playMC) {
+						starling.display.MovieClip(displayObject).fps = fps;
+						Starling.juggler.add(starling.display.MovieClip(displayObject));
+					}
 					break;
 					default: displayObject = new Sprite(); break;
 				}
@@ -280,12 +280,16 @@ package ui.rasterizer
 				_packer.insertRectangle(item.width, item.height, item.id);
 			});
 			_packer.packRectangles(true);
+
+			var duplicates:Array;
+			var duplicatesCount:uint;
 			
 			var atlasRect	: Rectangle = new Rectangle();
 			var rasterBMD	: BitmapData;
 			var rasterRect	: Rectangle;
 			var rasterItem	: RasterItem;
 			var rasterPos	: Point;
+			var rasterName	: String;
 			
 			var atlasBMD	: BitmapData = new BitmapData(_packer.packedWidth, _packer.packedHeight);
 			
@@ -298,11 +302,12 @@ package ui.rasterizer
 				rasterBMD 	= rasterItem	.bmd;
 				rasterRect 	= rasterBMD		.rect;
 				rasterPos 	= rasterItem	.pos;
+				rasterName	= rasterItem	.name;
 				
 				_packer.getRectangle(j, atlasRect);
 				 
 				subTextureXML = <SubTexture 
-					name 	= { rasterItem.name } 
+					name 	= { rasterName } 
 					type	= { rasterItem.type } 
 					lid		= { rasterItem.lid } 
 					px 		= { rasterPos.x } 
@@ -314,6 +319,20 @@ package ui.rasterizer
 				/>
 				_atlasXML.appendChild(subTextureXML);
 				
+				duplicates = _isObjectAlreadyExist[rasterName];
+				duplicatesCount = duplicates.length;
+				if (duplicatesCount > 0) {
+					while (duplicatesCount--) {
+						rasterItem = duplicates.shift();
+						rasterPos = rasterItem.pos;
+						subTextureXML = subTextureXML.copy();
+						subTextureXML.@lid = rasterItem.lid;
+						subTextureXML.@px = rasterPos.x;
+						subTextureXML.@py = rasterPos.y;
+						_atlasXML.appendChild(subTextureXML);
+					}
+					delete _isObjectAlreadyExist[rasterName];
+				} 
 				atlasBMD.copyPixels(rasterBMD, rasterRect, atlasRect.topLeft, rasterBMD, rasterRect.topLeft, false);
 			}
 			
@@ -436,8 +455,14 @@ package ui.rasterizer
 				childID, layoutID, type, name, 
 				entity, position
 			);
-			_itemsToRaster.push(rasterItem);
-			_currentAtlasSize += rasterItem.getSize();
+			var duplicates:Array = _isObjectAlreadyExist[name];
+			if (!duplicates) {
+				_itemsToRaster.push(rasterItem);
+				_isObjectAlreadyExist[name] = new Array();
+				_currentAtlasSize += rasterItem.getSize();
+			} else {
+				duplicates.push(rasterItem);
+			}
 		}
 		
 		public function get isCacheExist():Boolean { return _isCacheExist; }
