@@ -24,6 +24,7 @@ package
 		static public const RASTERIZER:String = "rasterizerNameMain";
 		
 		static public const LAYOUT_NAME_MAIN_SCREEN:String = "layout_main_screen";
+		static public const LAYOUT_NAME_LEVELS_SCREEN:String = "layout_levels_screen";
 		static public const LAYOUT_NAME_SETTINGS_SCREEN:String = "layout_settings_screen";
 		
 		static public const ELEMENT_LABELS_AVAILABLE:String = "labels_available";
@@ -49,8 +50,10 @@ package
 			if (!_raster.isCacheExist || !useChache) {
 				const mainScreenLayout:MainScreenBase = new MainScreenBase();
 				const settingsScreenLayout:SettingScreenBase = new SettingScreenBase();
+				const levelsScreenLayout:LevelsScreenBase = new LevelsScreenBase();
 				
 				_raster.addLayoutToRaster(mainScreenLayout, LAYOUT_NAME_MAIN_SCREEN);
+				_raster.addLayoutToRaster(levelsScreenLayout, LAYOUT_NAME_LEVELS_SCREEN);
 				_raster.addLayoutToRaster(settingsScreenLayout, LAYOUT_NAME_SETTINGS_SCREEN);
 				
 				const labelAvailable:LabelAvailable = new LabelAvailable();
@@ -78,6 +81,8 @@ package
 			const settingsLayout:Sprite = _raster.getLayoutByID(LAYOUT_NAME_SETTINGS_SCREEN);
 			screens.push(settingsLayout);
 			
+			const levelsLayout:Sprite = _raster.getLayoutByID(LAYOUT_NAME_LEVELS_SCREEN);
+			screens.push(levelsLayout);
 			
 			const labelAvailable:Image = _raster.getElementByName(ELEMENT_LABELS_AVAILABLE) as Image;
 			labelAvailable.x = 100;

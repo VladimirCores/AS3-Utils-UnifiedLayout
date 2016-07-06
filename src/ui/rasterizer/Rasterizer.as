@@ -43,20 +43,22 @@ package ui.rasterizer
 		
 		private var _readyCallback:Function;
 		
-		private var _itemsToRaster:Vector.<RasterItem> = new Vector.<RasterItem>();
-		private var _viewPort:Rectangle;
-		private var _name:Array = ["name", "ver", "number"];
-		private var _cacheVersion:String;
+		private var 
+			_itemsToRaster		: Vector.<RasterItem> = new Vector.<RasterItem>()
+		,	_viewPort			: Rectangle
+		,	_name				: Array = ["name", "ver", "number", "image"]
+		,	_cacheVersion		: String
 		
-		private var _packer:RectanglePacker;
+		,	_packer				: RectanglePacker
 		
-		private var _isCacheExist:Boolean;
-		private var _atlasTexture:TextureAtlas;
-		private var _atlasXML:XML;
+		,	_isCacheExist		: Boolean
+		,	_atlasTexture		: TextureAtlas
+		,	_atlasXML			: XML
 		
-		private var _minAtlasSize:uint;
-		private var _maxAtlasSize:uint;
-		private var _currentAtlasSize:uint;
+		,	_minAtlasSize		: uint
+		,	_maxAtlasSize		: uint
+		,	_currentAtlasSize	: uint
+		;
 		
 		private const _isObjectAlreadyExist:Dictionary = new Dictionary(true);
 		
@@ -82,15 +84,14 @@ package ui.rasterizer
 			var ba:ByteArray = EncryptedLocalStore.getItem(name);
 			var latestVersion:String = ba ? ba.readUTFBytes(ba.length) : null;
 			
-			
 			_isCacheExist = latestVersion == cacheVersion;
 		}
 		
 		public function addElementToRaster(
-			element 	: DisplayObject,
-			storeName	: String,
-			proportion	: Number,
-			position	: Point = null
+			element 		: DisplayObject,
+			storeName		: String,
+			proportion		: Number,
+			position		: Point = null
 		):void {
 			const isButton:Boolean = element is SimpleButton;
 			const mc:MovieClip = element as MovieClip;
@@ -132,8 +133,6 @@ package ui.rasterizer
 			layoutWidth = layoutWidth > 0 ? layoutWidth : layout.width;
 			layoutHeight = layoutHeight > 0 ? layoutHeight : layout.height;
 			
-			trace("layoutWidth, layoutHeight:", w, layoutWidth, h, layoutHeight);
-			
 			if (layoutID == "") layoutID = layout.name;
 			if (child) {
 				layout.removeChild(child);
@@ -141,9 +140,6 @@ package ui.rasterizer
 			}
 			
 			const prop:Number = proportion > 0 ? proportion : Math.ceil((w < h ? h / layoutHeight : w / layoutWidth) * 1000) / 1000;
-			
-			trace("prop", prop)
-			
 			while(numChildren--)
 			{
 				child = layout.getChildAt(numChildren);
@@ -184,8 +180,6 @@ package ui.rasterizer
 					child.y = lt.y * h;
 				}
 				
-				//ApplyPositionToChildWithLayout(child, isButton, prop, layoutWidth, layoutHeight);
-				
 				if (isButton) 
 				{
 					BTN_NAME_UP[0] = child.name;
@@ -222,7 +216,11 @@ package ui.rasterizer
 			}
 		}
 		
-		public function getLayoutByID(lid:String, playMC:Boolean = false, fps:uint = 30 ):Sprite {
+		public function getLayoutByID(
+			lid				: String, 
+			playMC			: Boolean = false, 
+			fps				: uint = 30 
+		):Sprite {
 			var result			: Sprite = new Sprite();
 			var subTextures		: XMLList = _atlasXML.SubTexture.(@lid==lid);
 			var subTexture		: Texture;
@@ -230,14 +228,55 @@ package ui.rasterizer
 			var subTextureType	: int;
 			var displayObject	: starling.display.DisplayObject;
 			
+			var storedValue		: Object;
+			
 			for each (var subTextureXML:XML in subTextures) 
 			{ 
-				subTextureName = subTextureXML.@name;
+				subTextureName = String(subTextureXML.@name);
+				subTextureType = int(subTextureXML.@type);
 				//trace(subTextureName, "subTextureXML.@type", subTextureXML.@type);
-				displayObject = GetStarlingDisplayObjectByTypeAndName(int(subTextureXML.@type), subTextureName);
-				if (displayObject is starling.display.MovieClip && playMC) {
-					starling.display.MovieClip(displayObject).fps = fps;
-					Starling.juggler.add(starling.display.MovieClip(displayObject));
+				
+				storedValue = null;
+				switch(subTextureType)
+				{
+					case RasterTypes.IMAGE:	  
+						storedValue = _isObjectAlreadyExist[subTextureName];
+						if (!storedValue) {
+							subTexture = _atlasTexture.getTexture(subTextureName);
+							_isObjectAlreadyExist[subTextureName] = subTexture as Texture;
+						} else subTexture = storedValue as Texture;
+						displayObject = new Image(subTexture);
+					break;
+					case RasterTypes.BUTTON:	
+						if (displayObject is Button) {
+							subTextureName = subTextureName.replace("up", "");
+							storedValue = _isObjectAlreadyExist[subTextureName];
+							if (storedValue == null) {
+								subTexture = _atlasTexture.getTexture(subTextureName);
+								_isObjectAlreadyExist[subTextureName] = subTexture;
+							} else subTexture = storedValue as Texture;
+							Button(displayObject).downState = subTexture;
+							Button(displayObject).scaleWhenDown = 1;
+						} else {
+							subTextureName = subTextureName.indexOf("up") == -1 ? subTextureName + "up" : subTextureName;
+							storedValue = _isObjectAlreadyExist[subTextureName];
+							if (storedValue == null) {
+								subTexture = _atlasTexture.getTexture(subTextureName);
+								_isObjectAlreadyExist[subTextureName] = subTexture;
+							} else subTexture = storedValue as Texture;
+							displayObject = new Button(subTexture); 
+						}
+					break;
+					case RasterTypes.MOVIECLIP:
+						storedValue = _isObjectAlreadyExist[subTextureName] as Vector.<Texture>;
+						if (storedValue == null) {
+							storedValue = _atlasTexture.getTextures(subTextureName);
+							_isObjectAlreadyExist[subTextureName] = storedValue;
+						}
+						displayObject = new starling.display.MovieClip(storedValue as Vector.<Texture>, fps);
+						if(playMC) Starling.juggler.add(starling.display.MovieClip(displayObject));
+					break;
+					default: displayObject = new Sprite(); break;
 				}
 				
 				displayObject.x = int(subTextureXML.@px);
@@ -249,53 +288,81 @@ package ui.rasterizer
 			return result;
 		}
 		
-		public function getElementByName(name:String):starling.display.DisplayObject {
-			var subTextureXML:XMLList = _atlasXML.SubTexture.(@name == name);
-			const result:starling.display.DisplayObject = GetStarlingDisplayObjectByTypeAndName(int(subTextureXML.@type), name);
+		public function getElementByName(elementName:String):starling.display.DisplayObject {
+			const subTextureXML:XMLList = _atlasXML.SubTexture.(@name == elementName);
+			const subTextureType = int(subTextureXML.@type);
+			
+			var subTexture:Texture;
+			var result:starling.display.DisplayObject;
+			
+			switch(subTextureType)
+			{
+				case RasterTypes.IMAGE:	  
+					subTexture = _atlasTexture.getTexture(elementName);
+					result = new Image(subTexture);
+				break;
+				case RasterTypes.BUTTON:
+					subTexture = _atlasTexture.getTexture(elementName);
+					result = new Button(subTexture); 
+					elementName = elementName + "up";
+					subTexture = _atlasTexture.getTexture(elementName);
+					Button(result).downState = subTexture;
+					Button(result).scaleWhenDown = 1;
+				break;
+				case RasterTypes.MOVIECLIP: result = new starling.display.MovieClip(_atlasTexture.getTextures(elementName)); break;
+				default: result = new Sprite(); break;
+			}
+			
 			result.x = int(subTextureXML.@px);
 			result.y = int(subTextureXML.@py);
-			result.name = name;
+			result.name = elementName;
 			return result;
 		}
 		
-		private function GetStarlingDisplayObjectByTypeAndName(type:int, name:String):starling.display.DisplayObject {
-			var result:starling.display.DisplayObject;
+		private function CreateStarlingDisplayObjectByTypeAndName(
+			input			: starling.display.DisplayObject, 
+			type			: int, 
+			name			: String
+		):void {
 			var texture:Texture;
 			switch(type)
 			{
-				case RasterTypes.IMAGE:	 
-					texture = _atlasTexture.getTexture(name);
-					result = new Image(texture); 
+				case RasterTypes.IMAGE:	  input = new Image(_atlasTexture.getTexture(name)); 
 				break;
 				case RasterTypes.BUTTON:	
-					if (result is Button) {
+					if (input is Button) {
 						texture = _atlasTexture.getTexture(name.replace("up", ""));
-						Button(result).downState = texture;
-						Button(result).scaleWhenDown = 1;
+						Button(input).downState = texture;
+						Button(input).scaleWhenDown = 1;
 					} else {
 						name = name.indexOf("up") == -1 ? name + "up" : name;
 						texture = _atlasTexture.getTexture(name);
-						result = new Button(texture); 
+						input = new Button(texture); 
 					}
 				break;
 			case RasterTypes.MOVIECLIP:
-				result = new starling.display.MovieClip(_atlasTexture.getTextures(name));
+				input = new starling.display.MovieClip(_atlasTexture.getTextures(name));
 				break;
-				default: result = new Sprite(); break;
+				default: input = new Sprite(); break;
 			}
-			return result;
 		}
 		
 		private function ProcessAndSave():void {
-			trace("Atlas expected size:", _currentAtlasSize, _minAtlasSize * _minAtlasSize);
+			trace("Atlas expected size | min | max:", _currentAtlasSize, _minAtlasSize * _minAtlasSize, _maxAtlasSize * _maxAtlasSize);
 			
-			var atlasMinSize:uint = _minAtlasSize * _minAtlasSize;
-			var atlasMaxSize:uint = _maxAtlasSize * _maxAtlasSize;
+			CheckIfTextureSizeFitMaxSize();
 			
-			if (_currentAtlasSize > atlasMinSize && _currentAtlasSize < atlasMaxSize) _minAtlasSize *= 2;
+			_name[3] = 1;
 			
 			_packer = new RectanglePacker(_minAtlasSize, _minAtlasSize, 0);
 			_atlasXML = new XML("<TextureAtlas imagePath='" + _name.join("_") +"'/>");
+					
+			//var counter:uint = _itemsToRaster.length;
+			//while (counter--) {
+				//
+			//}
+			//
+			//return;
 			
 			_itemsToRaster.forEach(function(item:RasterItem, index:int, vec:Vector.<RasterItem>):void {
 				_packer.insertRectangle(item.width, item.height, item.id);
@@ -352,8 +419,10 @@ package ui.rasterizer
 						subTextureXML.@py = rasterPos.y;
 						_atlasXML.appendChild(subTextureXML);
 					}
-					delete _isObjectAlreadyExist[rasterName];
-				} 
+				}
+				_isObjectAlreadyExist[rasterName] = null;
+				delete _isObjectAlreadyExist[rasterName];
+				
 				atlasBMD.copyPixels(rasterBMD, rasterRect, atlasRect.topLeft, rasterBMD, rasterRect.topLeft, false);
 			}
 			
@@ -486,7 +555,11 @@ package ui.rasterizer
 			}
 		}
 		
-		private function ApplyProportionToChild(child:DisplayObject, isBtn:Boolean, prop:Number):Boolean {
+		private function ApplyProportionToChild(
+			child		: DisplayObject, 
+			isBtn		: Boolean, 
+			prop		: Number
+		):Boolean {
 			var result:Boolean = false;
 			if (isBtn)
 			{
@@ -509,6 +582,13 @@ package ui.rasterizer
 				child.scaleY = prop; //child.height *= prop;//child.height = (rb.y - lt.y) * h;
 			}
 			return result;
+		}
+		
+		private function CheckIfTextureSizeFitMaxSize():void {
+			var atlasMinSize:uint = _minAtlasSize * _minAtlasSize;
+			var atlasMaxSize:uint = _maxAtlasSize * _maxAtlasSize;
+			
+			if (_currentAtlasSize > atlasMinSize && _currentAtlasSize < atlasMaxSize) _minAtlasSize *= 2;
 		}
 		
 		public function get isCacheExist():Boolean { return _isCacheExist; }

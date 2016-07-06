@@ -4,26 +4,44 @@
           <DOMFolderItem name="labels" itemID="577ba311-000006f3" isExpanded="true"/>
           <DOMFolderItem name="popups" itemID="577ba220-000006e1" isExpanded="true"/>
           <DOMFolderItem name="screens" itemID="54bd2f6d-00000216" isExpanded="true"/>
+          <DOMFolderItem name="screens/_levels" itemID="577cf3ac-0000070c" isExpanded="true"/>
+          <DOMFolderItem name="screens/_levels/icons" itemID="577cf411-00000724"/>
           <DOMFolderItem name="screens/_main" itemID="576fd85f-0000015b"/>
           <DOMFolderItem name="screens/_settings" itemID="576fdac4-00000173"/>
      </folders>
      <symbols>
           <Include href="graphics/g_background_popup.xml" itemIcon="1" loadImmediate="false" itemID="577ba258-000006e6" lastModified="1467720280"/>
           <Include href="graphics/g_background_screen.xml" itemIcon="1" loadImmediate="false" itemID="577ba25f-000006e7" lastModified="1467720287"/>
-          <Include href="labels/label_available.xml" itemID="577ba302-000006e9" lastModified="1467722492"/>
+          <Include href="labels/label_available.xml" itemID="577ba302-000006e9" lastModified="1467805574"/>
           <Include href="NConstrain.xml" itemID="576e2d90-00000276" lastModified="1466957976"/>
           <Include href="popups/popup_confirm.xml" loadImmediate="false" itemID="577ba21a-000006da" lastModified="1467720299"/>
+          <Include href="screens/_levels/icons/icon_level_1.xml" itemIcon="1" loadImmediate="false" itemID="577cf3fb-0000071f" lastModified="1467806721"/>
+          <Include href="screens/_levels/icons/icon_level_2.xml" itemIcon="1" loadImmediate="false" itemID="577cf42f-00000727" lastModified="1467806767"/>
+          <Include href="screens/_levels/icons/icon_level_3.xml" itemIcon="1" loadImmediate="false" itemID="577cf47f-0000072b" lastModified="1467806847"/>
+          <Include href="screens/_levels/icons/icon_level_4.xml" itemIcon="1" loadImmediate="false" itemID="577cf496-0000072f" lastModified="1467806870"/>
+          <Include href="screens/_levels/icons/icon_level_5.xml" itemIcon="1" loadImmediate="false" itemID="577cf4aa-00000733" lastModified="1467806890"/>
+          <Include href="screens/_levels/icons/icon_level_6.xml" itemIcon="1" loadImmediate="false" itemID="577cf4e8-00000741" lastModified="1467806953"/>
+          <Include href="screens/_levels/icons/icon_level_7.xml" itemIcon="1" loadImmediate="false" itemID="577cf4f1-00000745" lastModified="1467806961"/>
+          <Include href="screens/_levels/icons/icon_level_8.xml" itemIcon="1" loadImmediate="false" itemID="577cf4f9-00000749" lastModified="1467806969"/>
+          <Include href="screens/_levels/icons/icon_level_9.xml" itemIcon="1" loadImmediate="false" itemID="577cf4ff-0000074d" lastModified="1467806975"/>
+          <Include href="screens/_levels/icons/icon_level_10.xml" itemIcon="1" loadImmediate="false" itemID="577cf52e-0000075b" lastModified="1467807022"/>
+          <Include href="screens/_levels/icons/icon_level_11.xml" itemIcon="1" loadImmediate="false" itemID="577cf565-0000075f" lastModified="1467807077"/>
+          <Include href="screens/_levels/icons/icon_level_12.xml" itemIcon="1" loadImmediate="false" itemID="577cf56e-00000763" lastModified="1467807086"/>
+          <Include href="screens/_levels/icons/icon_level_13.xml" itemIcon="1" loadImmediate="false" itemID="577cf57d-00000767" lastModified="1467807101"/>
+          <Include href="screens/_levels/icons/icon_level_14.xml" itemIcon="1" loadImmediate="false" itemID="577cf752-00000772" lastModified="1467807570"/>
+          <Include href="screens/_levels/icons/icon_level_15.xml" itemIcon="1" loadImmediate="false" itemID="577cf74b-0000076f" lastModified="1467807563"/>
           <Include href="screens/_main/btn_confirm.xml" itemIcon="0" loadImmediate="false" itemID="54bd251b-00000203" lastModified="1466941129"/>
           <Include href="screens/_main/g_avatar.xml" itemIcon="1" loadImmediate="false" itemID="54bd24b7-000001ff" lastModified="1466939768"/>
-          <Include href="screens/_main/g_footer.xml" itemIcon="1" loadImmediate="false" itemID="54bd245a-000001fa" lastModified="1466948280"/>
+          <Include href="screens/_main/g_footer.xml" itemIcon="1" loadImmediate="false" itemID="54bd245a-000001fa" lastModified="1467808305"/>
           <Include href="screens/_main/g_nav_left.xml" itemIcon="1" loadImmediate="false" itemID="576e33b0-0000014b" lastModified="1466840355"/>
           <Include href="screens/_main/g_nav_right.xml" itemIcon="1" loadImmediate="false" itemID="576e33aa-00000142" lastModified="1466840351"/>
           <Include href="screens/_main/mc_icons.xml" loadImmediate="false" itemID="576fdf15-0000018c" lastModified="1467720406"/>
-          <Include href="screens/_main/slider.xml" loadImmediate="false" itemID="54bd45d6-00000230" lastModified="1466941275"/>
+          <Include href="screens/_main/slider.xml" loadImmediate="false" itemID="54bd45d6-00000230" lastModified="1467808346"/>
           <Include href="screens/_settings/btn_close.xml" itemIcon="0" loadImmediate="false" itemID="576fdb08-00000175" lastModified="1467711940"/>
           <Include href="screens/_settings/settings_title.xml" loadImmediate="false" itemID="576fdee7-0000018a" lastModified="1466949351"/>
-          <Include href="screens/screen_main.xml" itemID="5736e6c2-00000146" lastModified="1467711824"/>
-          <Include href="screens/screen_settings.xml" itemID="576fda97-0000016f" lastModified="1467722429"/>
+          <Include href="screens/screen_levels.xml" itemID="577cf385-00000708" lastModified="1467808257"/>
+          <Include href="screens/screen_main.xml" itemID="5736e6c2-00000146" lastModified="1467808351"/>
+          <Include href="screens/screen_settings.xml" itemID="576fda97-0000016f" lastModified="1467806599"/>
      </symbols>
      <timelines>
           <DOMTimeline name="Scene 1">
@@ -40,6 +58,13 @@
      </timelines>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="6669" publishTime="1467808329"/>
+          <PublishItem publishSize="6669" publishTime="1467808309"/>
+          <PublishItem publishSize="6680" publishTime="1467808277"/>
+          <PublishItem publishSize="6680" publishTime="1467808273"/>
+          <PublishItem publishSize="6674" publishTime="1467807691"/>
+          <PublishItem publishSize="6676" publishTime="1467807641"/>
+          <PublishItem publishSize="5883" publishTime="1467722495"/>
           <PublishItem publishSize="5447" publishTime="1467720507"/>
           <PublishItem publishSize="5297" publishTime="1467715153"/>
           <PublishItem publishSize="5293" publishTime="1467714598"/>
@@ -53,12 +78,5 @@
           <PublishItem publishSize="5101" publishTime="1466958167"/>
           <PublishItem publishSize="4539" publishTime="1466958096"/>
           <PublishItem publishSize="5582" publishTime="1466957920"/>
-          <PublishItem publishSize="5582" publishTime="1466957917"/>
-          <PublishItem publishSize="5661" publishTime="1466957893"/>
-          <PublishItem publishSize="5661" publishTime="1466957841"/>
-          <PublishItem publishSize="5592" publishTime="1466957735"/>
-          <PublishItem publishSize="5592" publishTime="1466957654"/>
-          <PublishItem publishSize="5592" publishTime="1466957176"/>
-          <PublishItem publishSize="5592" publishTime="1466957137"/>
      </publishHistory>
 </DOMDocument>

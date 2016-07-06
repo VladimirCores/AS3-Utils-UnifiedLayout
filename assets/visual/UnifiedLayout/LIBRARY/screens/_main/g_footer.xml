@@ -1,12 +1,15 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="screens/_main/g_footer" itemID="54bd245a-000001fa" symbolType="graphic" lastModified="1466948280" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="screens/_main/g_footer" itemID="54bd245a-000001fa" symbolType="graphic" lastModified="1467808305" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="g_footer">
       <layers>
-        <DOMLayer name="constrain" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="constrain" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMComponentInstance libraryItemName="NConstrain" uniqueID="1">
+                  <matrix>
+                    <Matrix a="0.306304931640625"/>
+                  </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -25,7 +28,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#4F80FF">
+        <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -55,10 +58,10 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" edges="!0 0|11000 0!11000 0|11000 800!11000 800|0 800!0 800|0 0"/>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!5796 348[5796 411 5614 456!5614 456[5433 501 5176 501!5176 501[4919 501 4737 456!4737 456[4556 411 4556 348!4556 348[4556 285 4737 240!4737 240[4919 195 5176 195!5176 195[5433 195 5614 240!5614 240[5796 285 5796 348"/>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!3451 377[3451 428 3275 464!3275 464[3099 501 2850 501!2850 501[2601 501 2425 464!2425 464[2249 428 2249 377!2249 377[2249 326 2425 289!2425 289[2601 253 2850 253!2850 253[3099 253 3275 289!3275 289[3451 326 3451 377"/>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!858 434[858 485 791 521!791 521[724 558 629 558!629 558[534 558 467 521!467 521[400 485 400 434!400 434[400 383 467 346!467 346[534 310 629 310!629 310[724 310 791 346!791 346[858 383 858 434"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1775 348[1775 411 1720 456!1720 456[1664 501 1585 501!1585 501[1507 501 1451 456!1451 456[1396 411 1396 348!1396 348[1396 285 1451 240!1451 240[1507 195 1585 195!1585 195[1664 195 1720 240!1720 240[1775 285 1775 348"/>
+                    <Edge fillStyle1="1" edges="!0 0|1961 0!1961 0|1961 800!1961 800|0 800!0 800|0 0"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="2" edges="!1057 377[1057 428 1003 464!1003 464[949 501 873 501!873 501[797 501 743 464!743 464[689 428 689 377!689 377[689 326 743 289!743 289[797 253 873 253!873 253[949 253 1003 289!1003 289[1057 326 1057 377"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!263 434[263 485 242 521!242 521[222 558 193 558!193 558[164 558 143 521!143 521[123 485 123 434!123 434[123 383 143 346!143 346[164 310 193 310!193 310[222 310 242 346!242 346[263 383 263 434"/>
                   </edges>
                 </DOMShape>
               </elements>
