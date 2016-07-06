@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="screens/screen_main" itemID="5736e6c2-00000146" linkageExportForAS="true" linkageClassName="MainScreenBase" lastModified="1467808351" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="screens/screen_main" itemID="5736e6c2-00000146" linkageExportForAS="true" linkageClassName="MainScreenBase" lastModified="1467822310" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="screen_main">
       <layers>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="types" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="types" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -38,7 +38,7 @@
                     <Point x="33" y="33"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="screens/_main/slider" name="slider" centerPoint3DX="200" centerPoint3DY="125">
+                <DOMSymbolInstance libraryItemName="screens/_main/slider" name="slider" selected="true" centerPoint3DX="200" centerPoint3DY="125">
                   <matrix>
                     <Matrix tx="200" ty="125"/>
                   </matrix>
@@ -74,7 +74,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="background" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="background" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

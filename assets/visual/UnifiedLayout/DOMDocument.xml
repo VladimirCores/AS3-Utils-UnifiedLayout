@@ -40,7 +40,7 @@
           <Include href="screens/_settings/btn_close.xml" itemIcon="0" loadImmediate="false" itemID="576fdb08-00000175" lastModified="1467711940"/>
           <Include href="screens/_settings/settings_title.xml" loadImmediate="false" itemID="576fdee7-0000018a" lastModified="1466949351"/>
           <Include href="screens/screen_levels.xml" itemID="577cf385-00000708" lastModified="1467808257"/>
-          <Include href="screens/screen_main.xml" itemID="5736e6c2-00000146" lastModified="1467808351"/>
+          <Include href="screens/screen_main.xml" itemID="5736e6c2-00000146" lastModified="1467822310"/>
           <Include href="screens/screen_settings.xml" itemID="576fda97-0000016f" lastModified="1467806599"/>
      </symbols>
      <timelines>
@@ -58,6 +58,8 @@
      </timelines>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="6679" publishTime="1467809779"/>
+          <PublishItem publishSize="6679" publishTime="1467808354"/>
           <PublishItem publishSize="6669" publishTime="1467808329"/>
           <PublishItem publishSize="6669" publishTime="1467808309"/>
           <PublishItem publishSize="6680" publishTime="1467808277"/>
@@ -76,7 +78,5 @@
           <PublishItem publishSize="5138" publishTime="1467711773"/>
           <PublishItem publishSize="5129" publishTime="1467707607"/>
           <PublishItem publishSize="5101" publishTime="1466958167"/>
-          <PublishItem publishSize="4539" publishTime="1466958096"/>
-          <PublishItem publishSize="5582" publishTime="1466957920"/>
      </publishHistory>
 </DOMDocument>

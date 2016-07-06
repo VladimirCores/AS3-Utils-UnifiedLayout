@@ -22,6 +22,7 @@ package ui.rasterizer
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
 	import nest.controls.NConstrain;
+	import starling.display.Quad;
 	
 	import org.villekoskela.utils.RectanglePacker;
 	import starling.core.Starling;
@@ -41,13 +42,19 @@ package ui.rasterizer
 		static private const BTN_NAME_UP:Array = ["", "up"];
 		static private const BTN_NAME_DOWN:Array = ["", ""];
 		
+		static private const ELS_LATES_ATLAS_COUNT:String = "els_rasterizer_latestAtlassCount";
+		
+		static private const ERROR_LOAD_FAIL_TEXTURE_FILE_NOT_EXIST:String = "Texture file does not exist";
+		static private const ERROR_LOAD_FAIL_XML_FILE_NOT_EXIST:String = "XML data file does not exist";
+		
 		private var _readyCallback:Function;
 		
 		private var 
 			_itemsToRaster		: Vector.<RasterItem> = new Vector.<RasterItem>()
 		,	_viewPort			: Rectangle
-		,	_name				: Array = ["name", "ver", "number", "image"]
+		,	_name				: Array = ["name", "ver", "number", "data"]
 		,	_cacheVersion		: String
+		,	_latestVersion		: String
 		
 		,	_packer				: RectanglePacker
 		
@@ -58,16 +65,18 @@ package ui.rasterizer
 		,	_minAtlasSize		: uint
 		,	_maxAtlasSize		: uint
 		,	_currentAtlasSize	: uint
+		,	_emptyTexture 		: Texture = Texture.fromColor(100, 100, 0xff0000)
 		;
 		
-		private const _isObjectAlreadyExist:Dictionary = new Dictionary(true);
+		private var _isObjectAlreadyExist:Dictionary = new Dictionary(true);
+		private var _atlasesByFileName:Dictionary = new Dictionary(true);
 		
 		public function Rasterizer(
 			name			: String,
 			viewPort		: Rectangle,
 			readyCallback	: Function, 
 			cacheVersion	: String = "1",
-			minAtlasSize	: uint = 1024,
+			minAtlasSize	: uint = 256,
 			maxAtlasSize	: uint = 4096
 		) {
 			this._viewPort = viewPort;
@@ -82,9 +91,9 @@ package ui.rasterizer
 			_name[2] = cacheVersion;
 			
 			var ba:ByteArray = EncryptedLocalStore.getItem(name);
-			var latestVersion:String = ba ? ba.readUTFBytes(ba.length) : null;
+			_latestVersion = ba ? ba.readUTFBytes(ba.length) : null;
 			
-			_isCacheExist = latestVersion == cacheVersion;
+			_isCacheExist = _latestVersion == _cacheVersion;
 		}
 		
 		public function addElementToRaster(
@@ -222,19 +231,21 @@ package ui.rasterizer
 			fps				: uint = 30 
 		):Sprite {
 			var result			: Sprite = new Sprite();
-			var subTextures		: XMLList = _atlasXML.SubTexture.(@lid==lid);
+			var subTextures		: XMLList = _atlasXML..SubTexture.(@lid==lid);
 			var subTexture		: Texture;
 			var subTextureName	: String;
 			var subTextureType	: int;
 			var displayObject	: starling.display.DisplayObject;
-			
+			var atlasName		: String
 			var storedValue		: Object;
+			
 			
 			for each (var subTextureXML:XML in subTextures) 
 			{ 
 				subTextureName = String(subTextureXML.@name);
 				subTextureType = int(subTextureXML.@type);
-				//trace(subTextureName, "subTextureXML.@type", subTextureXML.@type);
+				atlasName = subTextureXML.parent().@imagePath;
+				_atlasTexture = _atlasesByFileName[atlasName];
 				
 				storedValue = null;
 				switch(subTextureType)
@@ -245,7 +256,7 @@ package ui.rasterizer
 							subTexture = _atlasTexture.getTexture(subTextureName);
 							_isObjectAlreadyExist[subTextureName] = subTexture as Texture;
 						} else subTexture = storedValue as Texture;
-						displayObject = new Image(subTexture);
+						displayObject = new Image(subTexture  || _emptyTexture);
 					break;
 					case RasterTypes.BUTTON:	
 						if (displayObject is Button) {
@@ -255,7 +266,7 @@ package ui.rasterizer
 								subTexture = _atlasTexture.getTexture(subTextureName);
 								_isObjectAlreadyExist[subTextureName] = subTexture;
 							} else subTexture = storedValue as Texture;
-							Button(displayObject).downState = subTexture;
+							Button(displayObject).downState = subTexture || _emptyTexture;
 							Button(displayObject).scaleWhenDown = 1;
 						} else {
 							subTextureName = subTextureName.indexOf("up") == -1 ? subTextureName + "up" : subTextureName;
@@ -264,7 +275,7 @@ package ui.rasterizer
 								subTexture = _atlasTexture.getTexture(subTextureName);
 								_isObjectAlreadyExist[subTextureName] = subTexture;
 							} else subTexture = storedValue as Texture;
-							displayObject = new Button(subTexture); 
+							displayObject = new Button(subTexture || _emptyTexture); 
 						}
 					break;
 					case RasterTypes.MOVIECLIP:
@@ -273,8 +284,8 @@ package ui.rasterizer
 							storedValue = _atlasTexture.getTextures(subTextureName);
 							_isObjectAlreadyExist[subTextureName] = storedValue;
 						}
-						displayObject = new starling.display.MovieClip(storedValue as Vector.<Texture>, fps);
-						if(playMC) Starling.juggler.add(starling.display.MovieClip(displayObject));
+						displayObject = subTexture ? new starling.display.MovieClip(storedValue as Vector.<Texture>, fps) : new Quad(10, 10, 0xff0000);
+						if(playMC && subTexture) Starling.juggler.add(starling.display.MovieClip(displayObject));
 					break;
 					default: displayObject = new Sprite(); break;
 				}
@@ -288,33 +299,47 @@ package ui.rasterizer
 			return result;
 		}
 		
-		public function getElementByName(elementName:String):starling.display.DisplayObject {
+		public function getElementByName(
+			elementName		: String
+		):starling.display.DisplayObject {
 			const subTextureXML:XMLList = _atlasXML.SubTexture.(@name == elementName);
 			const subTextureType = int(subTextureXML.@type);
 			
 			var subTexture:Texture;
 			var result:starling.display.DisplayObject;
 			
-			switch(subTextureType)
-			{
-				case RasterTypes.IMAGE:	  
-					subTexture = _atlasTexture.getTexture(elementName);
-					result = new Image(subTexture);
-				break;
-				case RasterTypes.BUTTON:
-					subTexture = _atlasTexture.getTexture(elementName);
-					result = new Button(subTexture); 
-					elementName = elementName + "up";
-					subTexture = _atlasTexture.getTexture(elementName);
-					Button(result).downState = subTexture;
-					Button(result).scaleWhenDown = 1;
-				break;
-				case RasterTypes.MOVIECLIP: result = new starling.display.MovieClip(_atlasTexture.getTextures(elementName)); break;
-				default: result = new Sprite(); break;
-			}
+			var storedValue:Object;
 			
-			result.x = int(subTextureXML.@px);
-			result.y = int(subTextureXML.@py);
+			if (subTextureXML) {
+				switch(subTextureType)
+				{
+					case RasterTypes.IMAGE:	  
+						subTexture = _atlasTexture.getTexture(elementName);
+						storedValue = _isObjectAlreadyExist[elementName];
+						if (!storedValue) {
+							subTexture = _atlasTexture.getTexture(elementName);
+							_isObjectAlreadyExist[elementName] = subTexture as Texture;
+						} else subTexture = storedValue as Texture;
+						result = new Image(subTexture || _emptyTexture);
+					break;
+					case RasterTypes.BUTTON:
+						subTexture = _atlasTexture.getTexture(elementName);
+						result = new Button(subTexture || _emptyTexture); 
+						elementName = elementName + "up";
+						subTexture = _atlasTexture.getTexture(elementName);
+						Button(result).downState = subTexture || _emptyTexture;
+						Button(result).scaleWhenDown = 1;
+					break;
+					case RasterTypes.MOVIECLIP: result = new starling.display.MovieClip(_atlasTexture.getTextures(elementName)); break;
+					default: result = new Sprite(); break;
+				}
+				
+				result.x = int(subTextureXML.@px);
+				result.y = int(subTextureXML.@py);
+				
+			} else {
+				result = new Image(_emptyTexture);
+			}
 			result.name = elementName;
 			return result;
 		}
@@ -350,25 +375,18 @@ package ui.rasterizer
 		private function ProcessAndSave():void {
 			trace("Atlas expected size | min | max:", _currentAtlasSize, _minAtlasSize * _minAtlasSize, _maxAtlasSize * _maxAtlasSize);
 			
-			CheckIfTextureSizeFitMaxSize();
+			var ba:ByteArray;
+			var previousAtlasesCount:uint = 0;
 			
-			_name[3] = 1;
+			var dataXML:XML = <data/>;
+			var file:File;
+			var fileStream:FileStream = new FileStream();
 			
-			_packer = new RectanglePacker(_minAtlasSize, _minAtlasSize, 0);
-			_atlasXML = new XML("<TextureAtlas imagePath='" + _name.join("_") +"'/>");
-					
-			//var counter:uint = _itemsToRaster.length;
-			//while (counter--) {
-				//
-			//}
-			//
-			//return;
+			var fileXMLName:String;
+			var fileAtlasName:String;
 			
-			_itemsToRaster.forEach(function(item:RasterItem, index:int, vec:Vector.<RasterItem>):void {
-				_packer.insertRectangle(item.width, item.height, item.id);
-			});
-			_packer.packRectangles(true);
-
+			var atlasBMD:BitmapData
+			
 			var duplicates:Array;
 			var duplicatesCount:uint;
 			
@@ -379,98 +397,159 @@ package ui.rasterizer
 			var rasterPos	: Point;
 			var rasterName	: String;
 			
-			var atlasBMD	: BitmapData = new BitmapData(_packer.packedWidth, _packer.packedHeight);
-			
 			var subTextureXML:XML;
-			for (var j:int = 0, index:int; j < _packer.rectangleCount; j++)
+			
+			var processPackage:Function = function(atlasIndex:uint):void 
 			{
-				index = _packer.getRectangleId(j);
+				_packer.packRectangles(true);
+				_name[3] = atlasIndex;
+				fileAtlasName = _name.join("_");
+				atlasBMD = new BitmapData(_packer.packedWidth, _packer.packedHeight);
+				_atlasXML = <TextureAtlas/>;
+				_atlasXML.@imagePath = fileAtlasName;
 				
-				rasterItem 	= _itemsToRaster[index];
-				rasterBMD 	= rasterItem	.bmd;
-				rasterRect 	= rasterBMD		.rect;
-				rasterPos 	= rasterItem	.pos;
-				rasterName	= rasterItem	.name;
-				
-				_packer.getRectangle(j, atlasRect);
-				 
-				subTextureXML = <SubTexture 
-					name 	= { rasterName } 
-					type	= { rasterItem.type } 
-					lid		= { rasterItem.lid } 
-					px 		= { rasterPos.x } 
-					py 		= { rasterPos.y } 
-					x 		= { atlasRect.x } 
-					y 		= { atlasRect.y } 
-					width 	= { atlasRect.width } 
-					height 	= { atlasRect.height }
-				/>
-				_atlasXML.appendChild(subTextureXML);
-				
-				duplicates = _isObjectAlreadyExist[rasterName];
-				duplicatesCount = duplicates.length;
-				if (duplicatesCount > 0) {
-					while (duplicatesCount--) {
-						rasterItem = duplicates.shift();
-						rasterPos = rasterItem.pos;
-						subTextureXML = subTextureXML.copy();
-						subTextureXML.@lid = rasterItem.lid;
-						subTextureXML.@px = rasterPos.x;
-						subTextureXML.@py = rasterPos.y;
-						_atlasXML.appendChild(subTextureXML);
+				for (var j:int = 0, index:int; j < _packer.rectangleCount; j++)
+				{
+					index = _packer.getRectangleId(j);
+					
+					rasterItem 	= _itemsToRaster[index];
+					rasterBMD 	= rasterItem	.bmd;
+					rasterRect 	= rasterBMD		.rect;
+					rasterPos 	= rasterItem	.pos;
+					rasterName	= rasterItem	.name;
+					
+					_packer.getRectangle(j, atlasRect);
+					 
+					subTextureXML = <SubTexture 
+						name 	= { rasterName } 
+						type	= { rasterItem.type } 
+						lid		= { rasterItem.lid } 
+						px 		= { rasterPos.x } 
+						py 		= { rasterPos.y } 
+						x 		= { atlasRect.x } 
+						y 		= { atlasRect.y } 
+						width 	= { atlasRect.width } 
+						height 	= { atlasRect.height }
+					/>
+					_atlasXML.appendChild(subTextureXML);
+					
+					duplicates = _isObjectAlreadyExist[rasterName];
+					duplicatesCount = duplicates.length;
+					if (duplicatesCount > 0) {
+						while (duplicatesCount--) {
+							rasterItem = duplicates.shift();
+							rasterPos = rasterItem.pos;
+							subTextureXML = subTextureXML.copy();
+							subTextureXML.@lid = rasterItem.lid;
+							subTextureXML.@px = rasterPos.x;
+							subTextureXML.@py = rasterPos.y;
+							_atlasXML.appendChild(subTextureXML);
+						}
 					}
+					atlasBMD.copyPixels(rasterBMD, rasterRect, atlasRect.topLeft, rasterBMD, rasterRect.topLeft, false);
 				}
-				_isObjectAlreadyExist[rasterName] = null;
-				delete _isObjectAlreadyExist[rasterName];
 				
-				atlasBMD.copyPixels(rasterBMD, rasterRect, atlasRect.topLeft, rasterBMD, rasterRect.topLeft, false);
+				file = File.cacheDirectory.resolvePath(String(fileAtlasName + ".png"));
+				fileStream.open(file, FileMode.WRITE);
+				
+				_atlasesByFileName[fileAtlasName] = new TextureAtlas(Texture.fromBitmapData(atlasBMD), _atlasXML);
+				
+				if(ba) {
+					ba.clear();
+					ba.position = 0;
+				} else ba = new ByteArray();
+				atlasBMD.encode(new Rectangle(0, 0, atlasBMD.width, atlasBMD.height), new PNGEncoderOptions(true), ba);
+				fileStream.writeBytes(ba);
+				fileStream.close();
+				atlasBMD.dispose();
+				atlasBMD = null;
 			}
 			
-			_atlasTexture = new TextureAtlas(Texture.fromBitmapData(atlasBMD), _atlasXML);
+			var packedItems:Vector.<RasterItem> = new Vector.<RasterItem>();
+			var square:uint = 0, maxsize:uint = 0;
+			var itemsCount:uint = _itemsToRaster.length, atlassCounter:uint = 0;
+			var rasterItem:RasterItem;
 			
-			var ba:ByteArray = EncryptedLocalStore.getItem(name);
-			var latestVersion:String = ba ? ba.readUTFBytes(ba.length) : null;
+			CheckIfTextureSizeFitMaxSize();
 			
-			var fileXML:File;
-			var fileAtlas:File;
-			var fileStream:FileStream = new FileStream();
+			maxsize = _minAtlasSize * _minAtlasSize;
+			_packer = new RectanglePacker(_minAtlasSize, _minAtlasSize, 0);
 			
-			var fileName:String;
+			ba = EncryptedLocalStore.getItem(ELS_LATES_ATLAS_COUNT);
+			previousAtlasesCount = ba ? ba.readInt() : 0;
+			_name[2] = _latestVersion;
 			
 			// Delete previous created files
 			// C:\Users\Vladimir Minkin\AppData\Local\Temp
-			if (latestVersion) 
+			while (previousAtlasesCount) {
+				_name[3] = previousAtlasesCount;
+				fileAtlasName = _name.join("_");
+				file = File.cacheDirectory.resolvePath(String(fileAtlasName + ".png"));
+				if (file.exists) file.deleteFile();
+				previousAtlasesCount--;
+			}
+			
+			_name[2] = _cacheVersion;
+			for (var i:int = 0; i < itemsCount; i++) 
 			{
-				_name[2] = latestVersion;
-				fileName = _name.join("_");
-				fileXML = File.cacheDirectory.resolvePath(String(fileName + ".xml"));
-				if (fileXML.exists) fileXML.deleteFile();
-				fileAtlas = File.cacheDirectory.resolvePath(String(fileName + ".png"));
-				if (fileAtlas.exists) fileAtlas.deleteFile();
+				rasterItem = _itemsToRaster[i];
+				square += rasterItem.getSize();
+				
+				if (square >= maxsize) 
+				{
+					processPackage(++atlassCounter);
+					dataXML.appendChild(_atlasXML);
+
+					_packer.reset(_minAtlasSize, _minAtlasSize, 0);
+					square = 0;
+				} 
+				else 
+				{
+					_packer.insertRectangle(rasterItem.width, rasterItem.height, rasterItem.id);
+				}
+			}
+			
+			processPackage(++atlassCounter);
+			dataXML.appendChild(_atlasXML);
+			
+			_isObjectAlreadyExist = new Dictionary(true);
+			
+			_name[3] = "data";
+
+			if (_latestVersion) 
+			{
+				_name[2] = _latestVersion;
+				fileXMLName = _name.join("_");
+				file = File.cacheDirectory.resolvePath(String(fileXMLName + ".xml"));
+				if (file.exists) file.deleteFile();
 				_name[2] = _cacheVersion;
-			} 
+			}
 			
-			fileName = _name.join("_");
-			fileXML = File.cacheDirectory.resolvePath(String(fileName + ".xml"));
-			fileStream.open(fileXML, FileMode.WRITE);
-			fileStream.writeUTFBytes(_atlasXML.toXMLString());
-			fileStream.close();
-			
-			fileAtlas = File.cacheDirectory.resolvePath(String(fileName + ".png"));
-			fileStream.open(fileAtlas, FileMode.WRITE);
-			
-			if(ba) {
-				ba.clear();
-				ba.position = 0;
-			} else ba = new ByteArray();
-			atlasBMD.encode(new Rectangle(0, 0, atlasBMD.width, atlasBMD.height), new PNGEncoderOptions(true), ba);
-			fileStream.writeBytes(ba);
+			fileXMLName = _name.join("_");
+			file = File.cacheDirectory.resolvePath(String(fileXMLName + ".xml"));
+			fileStream.open(file, FileMode.WRITE);
+			fileStream.writeUTFBytes(dataXML.toXMLString());
 			fileStream.close();
 			
 			ba.clear();
 			ba.position = 0;
 			ba.writeUTFBytes(_cacheVersion);
 			EncryptedLocalStore.setItem(name, ba);
+			
+			ba.clear();
+			ba.position = 0;
+			ba.writeInt(atlassCounter);
+			EncryptedLocalStore.setItem(ELS_LATES_ATLAS_COUNT, ba);
+			
+			_atlasXML = dataXML;
+			_latestVersion = _cacheVersion;
+			
+			while (_itemsToRaster.length) _itemsToRaster.shift();
+			_itemsToRaster = null;
+			_name = null;
+			ba.clear();
+			ba = null;
+			_packer = null;
 			
 			_readyCallback();
 		}
@@ -482,45 +561,70 @@ package ui.rasterizer
 			
 			fileXML = File.cacheDirectory.resolvePath(fileName);
 			if (fileXML.exists) {
-				fileStream.addEventListener(Event.COMPLETE, Handler_ReadXMLFileComplete);
+				fileStream.addEventListener(Event.COMPLETE, HandlerReadXMLFileComplete);
 				fileStream.openAsync(fileXML, FileMode.READ);
+			}
+			else 
+			{
+				throw new Error(ERROR_LOAD_FAIL_XML_FILE_NOT_EXIST);
 			}
 		}
 		
-		private function Handler_ReadXMLFileComplete(e:Event):void {
-			var fileAtlas:File;
-			var fileStream:FileStream = FileStream(e.currentTarget);
-			var fileName:String = _name.join("_") + ".png";
+		private function HandlerReadXMLFileComplete(e:Event):void {
+			var fileAtlas		:File;
+			var fileStream		:FileStream = FileStream(e.currentTarget);
+			var fileName		:String;
+			var subTextureXML	:XML;
+			var texturesStack	:Array = new Array();
 			
-			fileStream.removeEventListener(Event.COMPLETE, Handler_ReadXMLFileComplete);
+			var loadTextures:Function = function () 
+			{
+				if (texturesStack.length) {
+					subTextureXML = texturesStack.shift();
+					fileName = subTextureXML.@imagePath;
+					fileAtlas = File.cacheDirectory.resolvePath(fileName + ".png");
+					if(fileAtlas.exists) {
+						fileStream.addEventListener(Event.COMPLETE, openTextureFileComplete);
+						fileStream.openAsync(fileAtlas, FileMode.READ);
+					} 
+					else 
+					{
+						throw new Error(ERROR_LOAD_FAIL_TEXTURE_FILE_NOT_EXIST);
+					}
+				} 
+				else 
+				{
+					_readyCallback();
+				}
+			}
+			
+			function openTextureFileComplete(e:Event):void {
+				var ba:ByteArray = new ByteArray();
+				var loader:Loader = new Loader();
+				var handleLoadTextureFile:Function = function(evt:Event):void {
+					loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, handleLoadTextureFile);
+					_atlasTexture = new TextureAtlas(Texture.fromBitmap(Bitmap(loader.content)), subTextureXML);
+					_atlasesByFileName[fileName] = _atlasTexture;
+					loader.unloadAndStop(true);
+					ba.clear();
+					loader = null;
+					fileAtlas.cancel();
+					loadTextures();
+				}
+				fileStream.removeEventListener(Event.COMPLETE, openTextureFileComplete);
+				fileStream.readBytes(ba);
+				fileStream.close();
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, handleLoadTextureFile);
+				loader.loadBytes(ba);
+			}
+			
+			fileStream.removeEventListener(Event.COMPLETE, HandlerReadXMLFileComplete);
 			_atlasXML = new XML(fileStream.readUTFBytes(fileStream.bytesAvailable));
 			fileStream.close();
 			
-			fileAtlas = File.cacheDirectory.resolvePath(fileName);
-			if(fileAtlas.exists) {
-				fileStream.addEventListener(Event.COMPLETE, Handler_ReadAtlasFileComplete);
-				fileStream.openAsync(fileAtlas, FileMode.READ);
-			}
-		}
-		
-		private function Handler_ReadAtlasFileComplete(e:Event):void {
-			var ba:ByteArray = new ByteArray();
-			var loader:Loader = new Loader();
-			var handleLoad:Function = function(evt:Event):void {
-				loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, handleLoad);
-				_atlasTexture = new TextureAtlas(Texture.fromBitmap(Bitmap(loader.content)), _atlasXML);
-				_readyCallback();
-				loader.unloadAndStop(true);
-				ba.clear();
-				loader = null;
-			}
-			var fileStream:FileStream = FileStream(e.currentTarget);
-			fileStream.removeEventListener(Event.COMPLETE, Handler_ReadAtlasFileComplete);
-			fileStream.readBytes(ba);
-			fileStream.close();
-			fileStream = null;
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, handleLoad);
-			loader.loadBytes(ba);
+			for each (subTextureXML in _atlasXML.TextureAtlas) 	texturesStack.push(subTextureXML);
+			
+			loadTextures();
 		}
 		
 		private function GetConstrainFromChild(doc:DisplayObjectContainer):NConstrain {
@@ -588,7 +692,11 @@ package ui.rasterizer
 			var atlasMinSize:uint = _minAtlasSize * _minAtlasSize;
 			var atlasMaxSize:uint = _maxAtlasSize * _maxAtlasSize;
 			
-			if (_currentAtlasSize > atlasMinSize && _currentAtlasSize < atlasMaxSize) _minAtlasSize *= 2;
+			while (_currentAtlasSize > atlasMinSize && _currentAtlasSize < atlasMaxSize) {
+				_minAtlasSize *= 2;
+				atlasMinSize = _minAtlasSize * _minAtlasSize;
+			}
+			if (_currentAtlasSize > atlasMaxSize) _minAtlasSize = _maxAtlasSize;
 		}
 		
 		public function get isCacheExist():Boolean { return _isCacheExist; }

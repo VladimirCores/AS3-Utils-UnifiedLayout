@@ -82,6 +82,10 @@ package org.villekoskela.utils
          */
         public function reset(width:int, height:int, padding:int = 0):void
         {
+			mOutsideRectangle.x = width + 1;
+			mOutsideRectangle.y = height + 1;
+            mOutsideRectangle.width = mOutsideRectangle.height = 0;			
+			
             while (mInsertedRectangles.length)
             {
                 freeRectangle(mInsertedRectangles.pop());
