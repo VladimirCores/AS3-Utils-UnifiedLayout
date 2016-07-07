@@ -9,29 +9,27 @@ package ui.rasterizer
 	import flash.display.MovieClip;
 	import flash.display.PNGEncoderOptions;
 	import flash.display.SimpleButton;
-	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
-	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
+	
 	import nest.controls.NConstrain;
-	import starling.display.Quad;
 	
 	import org.villekoskela.utils.RectanglePacker;
+	
 	import starling.core.Starling;
 	import starling.display.Button;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
-	import ui.screens.MainScreen;
 	
 	/**
 	 * ...
@@ -77,7 +75,7 @@ package ui.rasterizer
 			readyCallback	: Function, 
 			cacheVersion	: String = "1",
 			minAtlasSize	: uint = 256,
-			maxAtlasSize	: uint = 4096
+			maxAtlasSize	: uint = 512
 		) {
 			this._viewPort = viewPort;
 			this._readyCallback = readyCallback;
@@ -168,7 +166,7 @@ package ui.rasterizer
 				ApplyProportionToChild(child, isButton, prop);
 				
 				doc = isButton ?  (SimpleButton(child).upState as DisplayObjectContainer) : (child as DisplayObjectContainer);
-				if ( doc &&  (constrain = GetConstrainFromChild(doc)))  
+				if ( doc && (constrain = GetConstrainFromChild(doc)) )  
 				{
 					switch (constrain.constrainX) {
 						case NConstrain.LEFT: 	child.x *= prop; break;
@@ -235,6 +233,7 @@ package ui.rasterizer
 			var subTexture		: Texture;
 			var subTextureName	: String;
 			var subTextureType	: int;
+			var subTextureScale	: Number;
 			var displayObject	: starling.display.DisplayObject;
 			var atlasName		: String
 			var storedValue		: Object;
@@ -242,39 +241,28 @@ package ui.rasterizer
 			
 			for each (var subTextureXML:XML in subTextures) 
 			{ 
-				subTextureName = String(subTextureXML.@name);
-				subTextureType = int(subTextureXML.@type);
-				atlasName = subTextureXML.parent().@imagePath;
-				_atlasTexture = _atlasesByFileName[atlasName];
+				subTextureName 	= String(subTextureXML.@name);
+				subTextureType 	= int(subTextureXML.@type);
+				subTextureScale	= Number(subTextureXML.@scale);
+				atlasName 		= subTextureXML.parent().@imagePath;
+				_atlasTexture 	= _atlasesByFileName[atlasName];
 				
 				storedValue = null;
 				switch(subTextureType)
 				{
 					case RasterTypes.IMAGE:	  
-						storedValue = _isObjectAlreadyExist[subTextureName];
-						if (!storedValue) {
-							subTexture = _atlasTexture.getTexture(subTextureName);
-							_isObjectAlreadyExist[subTextureName] = subTexture as Texture;
-						} else subTexture = storedValue as Texture;
+						subTexture = GetStoredTextureByName(subTextureName);
 						displayObject = new Image(subTexture  || _emptyTexture);
 					break;
 					case RasterTypes.BUTTON:	
 						if (displayObject is Button) {
 							subTextureName = subTextureName.replace("up", "");
-							storedValue = _isObjectAlreadyExist[subTextureName];
-							if (storedValue == null) {
-								subTexture = _atlasTexture.getTexture(subTextureName);
-								_isObjectAlreadyExist[subTextureName] = subTexture;
-							} else subTexture = storedValue as Texture;
+							subTexture = GetStoredTextureByName(subTextureName);
 							Button(displayObject).downState = subTexture || _emptyTexture;
 							Button(displayObject).scaleWhenDown = 1;
 						} else {
 							subTextureName = subTextureName.indexOf("up") == -1 ? subTextureName + "up" : subTextureName;
-							storedValue = _isObjectAlreadyExist[subTextureName];
-							if (storedValue == null) {
-								subTexture = _atlasTexture.getTexture(subTextureName);
-								_isObjectAlreadyExist[subTextureName] = subTexture;
-							} else subTexture = storedValue as Texture;
+							subTexture = GetStoredTextureByName(subTextureName);
 							displayObject = new Button(subTexture || _emptyTexture); 
 						}
 					break;
@@ -284,14 +272,17 @@ package ui.rasterizer
 							storedValue = _atlasTexture.getTextures(subTextureName);
 							_isObjectAlreadyExist[subTextureName] = storedValue;
 						}
-						displayObject = subTexture ? new starling.display.MovieClip(storedValue as Vector.<Texture>, fps) : new Quad(10, 10, 0xff0000);
-						if(playMC && subTexture) Starling.juggler.add(starling.display.MovieClip(displayObject));
+						displayObject = storedValue ? new starling.display.MovieClip(storedValue as Vector.<Texture>, fps) : new Image(_emptyTexture);
+						if(playMC && storedValue) Starling.juggler.add(starling.display.MovieClip(displayObject));
 					break;
 					default: displayObject = new Sprite(); break;
 				}
 				
 				displayObject.x = int(subTextureXML.@px);
 				displayObject.y = int(subTextureXML.@py);
+				displayObject.scaleX = subTextureScale;
+				displayObject.scaleY = subTextureScale;
+
 				displayObject.name = subTextureName;
 				
 				result.addChild(displayObject);
@@ -303,30 +294,27 @@ package ui.rasterizer
 			elementName		: String
 		):starling.display.DisplayObject {
 			const subTextureXML:XMLList = _atlasXML.SubTexture.(@name == elementName);
-			const subTextureType = int(subTextureXML.@type);
+			const subTextureType:int = int(subTextureXML.@type);
 			
 			var subTexture:Texture;
 			var result:starling.display.DisplayObject;
 			
 			var storedValue:Object;
+			var scale:Number;
 			
 			if (subTextureXML) {
+				scale = Number(subTextureXML.@scale) || 1;
 				switch(subTextureType)
 				{
 					case RasterTypes.IMAGE:	  
-						subTexture = _atlasTexture.getTexture(elementName);
-						storedValue = _isObjectAlreadyExist[elementName];
-						if (!storedValue) {
-							subTexture = _atlasTexture.getTexture(elementName);
-							_isObjectAlreadyExist[elementName] = subTexture as Texture;
-						} else subTexture = storedValue as Texture;
+						subTexture = GetStoredTextureByName(elementName);
 						result = new Image(subTexture || _emptyTexture);
 					break;
 					case RasterTypes.BUTTON:
-						subTexture = _atlasTexture.getTexture(elementName);
+						subTexture = GetStoredTextureByName(elementName);
 						result = new Button(subTexture || _emptyTexture); 
 						elementName = elementName + "up";
-						subTexture = _atlasTexture.getTexture(elementName);
+						subTexture = GetStoredTextureByName(elementName);
 						Button(result).downState = subTexture || _emptyTexture;
 						Button(result).scaleWhenDown = 1;
 					break;
@@ -334,8 +322,12 @@ package ui.rasterizer
 					default: result = new Sprite(); break;
 				}
 				
+				result.scaleX = scale;
+				result.scaleY = scale;
+				
 				result.x = int(subTextureXML.@px);
 				result.y = int(subTextureXML.@py);
+				
 				
 			} else {
 				result = new Image(_emptyTexture);
@@ -344,32 +336,14 @@ package ui.rasterizer
 			return result;
 		}
 		
-		private function CreateStarlingDisplayObjectByTypeAndName(
-			input			: starling.display.DisplayObject, 
-			type			: int, 
-			name			: String
-		):void {
-			var texture:Texture;
-			switch(type)
-			{
-				case RasterTypes.IMAGE:	  input = new Image(_atlasTexture.getTexture(name)); 
-				break;
-				case RasterTypes.BUTTON:	
-					if (input is Button) {
-						texture = _atlasTexture.getTexture(name.replace("up", ""));
-						Button(input).downState = texture;
-						Button(input).scaleWhenDown = 1;
-					} else {
-						name = name.indexOf("up") == -1 ? name + "up" : name;
-						texture = _atlasTexture.getTexture(name);
-						input = new Button(texture); 
-					}
-				break;
-			case RasterTypes.MOVIECLIP:
-				input = new starling.display.MovieClip(_atlasTexture.getTextures(name));
-				break;
-				default: input = new Sprite(); break;
+		private function GetStoredTextureByName(value:String):Texture {
+			var temp:Object = _isObjectAlreadyExist[value];
+			var result:Texture = temp as Texture;
+			if (!result) {
+				result = _atlasTexture.getTexture(value);
+				_isObjectAlreadyExist[value] = result;
 			}
+			return result;
 		}
 		
 		private function ProcessAndSave():void {
@@ -401,7 +375,6 @@ package ui.rasterizer
 			
 			var processPackage:Function = function(atlasIndex:uint):void 
 			{
-				_packer.packRectangles(true);
 				_name[3] = atlasIndex;
 				fileAtlasName = _name.join("_");
 				atlasBMD = new BitmapData(_packer.packedWidth, _packer.packedHeight);
@@ -430,6 +403,7 @@ package ui.rasterizer
 						y 		= { atlasRect.y } 
 						width 	= { atlasRect.width } 
 						height 	= { atlasRect.height }
+						scale 	= { rasterItem.scale }
 					/>
 					_atlasXML.appendChild(subTextureXML);
 					
@@ -468,7 +442,6 @@ package ui.rasterizer
 			var packedItems:Vector.<RasterItem> = new Vector.<RasterItem>();
 			var square:uint = 0, maxsize:uint = 0;
 			var itemsCount:uint = _itemsToRaster.length, atlassCounter:uint = 0;
-			var rasterItem:RasterItem;
 			
 			CheckIfTextureSizeFitMaxSize();
 			
@@ -490,18 +463,26 @@ package ui.rasterizer
 			}
 			
 			_name[2] = _cacheVersion;
+			var packedRect:uint = 0;
 			for (var i:int = 0; i < itemsCount; i++) 
 			{
 				rasterItem = _itemsToRaster[i];
+				trace(rasterItem.id, rasterItem.name);
+				
+				if(rasterItem.width > _maxAtlasSize) {
+					rasterItem.resizeToFitWidth(_maxAtlasSize);
+				}
+				
 				square += rasterItem.getSize();
 				
 				if (square >= maxsize) 
 				{
+					packedRect += _packer.packRectangles(true);
 					processPackage(++atlassCounter);
 					dataXML.appendChild(_atlasXML);
-
 					_packer.reset(_minAtlasSize, _minAtlasSize, 0);
 					square = 0;
+					i = packedRect;
 				} 
 				else 
 				{
@@ -509,6 +490,7 @@ package ui.rasterizer
 				}
 			}
 			
+			_packer.packRectangles(true);
 			processPackage(++atlassCounter);
 			dataXML.appendChild(_atlasXML);
 			
@@ -577,7 +559,7 @@ package ui.rasterizer
 			var subTextureXML	:XML;
 			var texturesStack	:Array = new Array();
 			
-			var loadTextures:Function = function () 
+			var loadTextures:Function = function ():void
 			{
 				if (texturesStack.length) {
 					subTextureXML = texturesStack.shift();

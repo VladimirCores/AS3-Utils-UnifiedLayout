@@ -1,7 +1,5 @@
 package 
 {
-	import adobe.utils.CustomActions;
-	import flash.display.Stage;
 	import flash.events.KeyboardEvent;
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
@@ -11,9 +9,7 @@ package
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
-	import ui.screens.MainScreen;
 	import ui.rasterizer.Rasterizer;
-	import ui.screens.MainScreen;
 	
 	/**
 	 * ...
@@ -45,7 +41,7 @@ package
 			
 			start = getTimer();
 			
-			var useChache:Boolean = true;
+			var useChache:Boolean = false;
 			
 			if (!_raster.isCacheExist || !useChache) {
 				const mainScreenLayout:MainScreenBase = new MainScreenBase();
