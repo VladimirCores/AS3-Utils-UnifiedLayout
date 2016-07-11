@@ -40,6 +40,8 @@ package ui.rasterizer
 		static private const BTN_NAME_UP:Array = ["", "up"];
 		static private const BTN_NAME_DOWN:Array = ["", ""];
 		
+		static private const XML_NAMES_SEPARATOR:String = "_";
+
 		static private const ELS_LATES_ATLAS_COUNT:String = "els_rasterizer_latestAtlassCount";
 		
 		static private const ERROR_LOAD_FAIL_TEXTURE_FILE_NOT_EXIST:String = "Texture file does not exist";
@@ -375,6 +377,7 @@ package ui.rasterizer
 			
 			var processPackage:Function = function(atlasIndex:uint):void 
 			{
+				trace("RASTER", atlasIndex);
 				_name[3] = atlasIndex;
 				fileAtlasName = _name.join("_");
 				atlasBMD = new BitmapData(_packer.packedWidth, _packer.packedHeight);
@@ -392,7 +395,9 @@ package ui.rasterizer
 					rasterName	= rasterItem	.name;
 					
 					_packer.getRectangle(j, atlasRect);
-					 
+					
+					trace("\t > process:", rasterName);
+					
 					subTextureXML = <SubTexture 
 						name 	= { rasterName } 
 						type	= { rasterItem.type } 
@@ -463,31 +468,31 @@ package ui.rasterizer
 			}
 			
 			_name[2] = _cacheVersion;
-			var packedRect:uint = 0;
+			var packedRect:uint = 0, rectInPack:uint = 0;
+			var packedItemsCount:uint = 0;
 			for (var i:int = 0; i < itemsCount; i++) 
 			{
+				packedItemsCount = packedRect + rectInPack;
 				rasterItem = _itemsToRaster[i];
-				trace(rasterItem.id, rasterItem.name);
+				//trace(i, rectInPack, packedRect + rectInPack,rasterItem.id, rasterItem.name);
 				
 				if(rasterItem.width > _maxAtlasSize) {
 					rasterItem.resizeToFitWidth(_maxAtlasSize);
 				}
 				
-				square += rasterItem.getSize();
-				
-				if (square >= maxsize) 
+				if (packedItemsCount < i) 
 				{
-					packedRect += _packer.packRectangles(true);
+					packedRect += rectInPack;
 					processPackage(++atlassCounter);
 					dataXML.appendChild(_atlasXML);
 					_packer.reset(_minAtlasSize, _minAtlasSize, 0);
-					square = 0;
-					i = packedRect;
+					// And we need to get the same item again
+					i-=2; // Because on in this cycle and one one next
+					continue;
 				} 
-				else 
-				{
-					_packer.insertRectangle(rasterItem.width, rasterItem.height, rasterItem.id);
-				}
+				
+				_packer.insertRectangle(rasterItem.width, rasterItem.height, rasterItem.id);
+				rectInPack = _packer.packRectangles(true);
 			}
 			
 			_packer.packRectangles(true);
@@ -501,13 +506,13 @@ package ui.rasterizer
 			if (_latestVersion) 
 			{
 				_name[2] = _latestVersion;
-				fileXMLName = _name.join("_");
+				fileXMLName = _name.join(XML_NAMES_SEPARATOR);
 				file = File.cacheDirectory.resolvePath(String(fileXMLName + ".xml"));
 				if (file.exists) file.deleteFile();
 				_name[2] = _cacheVersion;
 			}
 			
-			fileXMLName = _name.join("_");
+			fileXMLName = _name.join(XML_NAMES_SEPARATOR);
 			file = File.cacheDirectory.resolvePath(String(fileXMLName + ".xml"));
 			fileStream.open(file, FileMode.WRITE);
 			fileStream.writeUTFBytes(dataXML.toXMLString());
@@ -539,17 +544,14 @@ package ui.rasterizer
 		private function ProcessFromLoad():void {
 			var fileXML:File;
 			var fileStream:FileStream = new FileStream();
-			var fileName:String = _name.join("_") + ".xml";
+			var fileName:String = _name.join(XML_NAMES_SEPARATOR) + ".xml";
 			
 			fileXML = File.cacheDirectory.resolvePath(fileName);
 			if (fileXML.exists) {
 				fileStream.addEventListener(Event.COMPLETE, HandlerReadXMLFileComplete);
 				fileStream.openAsync(fileXML, FileMode.READ);
 			}
-			else 
-			{
-				throw new Error(ERROR_LOAD_FAIL_XML_FILE_NOT_EXIST);
-			}
+			else throw new Error(ERROR_LOAD_FAIL_XML_FILE_NOT_EXIST);
 		}
 		
 		private function HandlerReadXMLFileComplete(e:Event):void {
